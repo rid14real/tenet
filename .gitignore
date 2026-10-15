@@ -1,0 +1,8 @@
+node_modules
+dist
+*.log
+.env
+coverage
+.DS_Store
+dist-artifact.html
+apps/web/dist-artifact

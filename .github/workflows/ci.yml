@@ -1,0 +1,27 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - name: Create a non-superuser test role (row-level security must apply)
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -c "CREATE ROLE tenet LOGIN PASSWORD 'tenet' NOSUPERUSER NOBYPASSRLS"
+          PGPASSWORD=postgres psql -h localhost -U postgres -c "CREATE DATABASE tenet_test OWNER tenet"
+          PGPASSWORD=postgres psql -h localhost -U postgres -d tenet_test -c "CREATE EXTENSION pgcrypto"
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+        env:
+          TEST_DATABASE_URL: postgres://tenet:tenet@localhost:5432/tenet_test
