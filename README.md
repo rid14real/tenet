@@ -2,41 +2,61 @@
 
 Privacy and AI governance platform built for Nigeria first, then the rest of Africa and global regimes. Tenet is a working name.
 
-Licensed DPCOs and in-house DPOs use it to run each client's NDPA/GAID cycle: records of processing, vendors and transfers, DPIAs, AI systems, incidents and data subject requests. Tenet works out the client's tier and its audit-return readiness from those records and produces a filing pack for the DPCO to review.
+## Two ways to run a programme
 
-## What it does
+When an organisation signs up it chooses one of two modes, which an admin can change later:
 
-| Area | What you get |
+- **In-house.** A company runs its own programme for itself and, if it has them, its group entities. With a single entity, Tenet opens straight into it.
+- **Advisory.** A DPCO, DPO service or law firm runs programmes for its clients and sees them all on one page.
+
+The data model is the same in both modes. Only the wording and the home screen change. Each organisation is a separate tenant, isolated in the database by row-level security.
+
+## Laws in scope drive everything
+
+Each entity selects the laws that apply to it: Nigeria (NDPA 2023 and GAID 2025), South Africa (POPIA), Kenya (DPA 2019), Ghana (DPA 2012), Egypt (PDPL), Zimbabwe (CDPA), the EU GDPR and the UK GDPR. Each law is a **jurisdiction pack** in `packages/core/src/jurisdictions.ts`. A pack defines:
+
+- the regulator, the officer title (DPO, Information Officer, Data Protection Supervisor) and the registration fields;
+- which data categories count as sensitive;
+- which lawful bases exist, with their citations;
+- which rights exist and their deadlines;
+- the breach test and notification windows;
+- when a DPIA is required and whether prior consultation applies;
+- the transfer rule.
+
+Nothing from a law that is not selected appears anywhere. If you deselect Nigeria, the NDPC registration number, tier, audit return and NDPA citations disappear from settings, forms, compliance, the action plan and the deadlines list. The values you entered are kept, and they come back if you select Nigeria again. Forms also adapt to the record itself. For example, the condition for sensitive data appears only when a selected category is sensitive under a selected law (marital status is sensitive in Kenya but not in Nigeria). Transfer fields appear only when a system or vendor sits outside a selected jurisdiction.
+
+## Modules
+
+| Module | What makes it more than a register |
 |---|---|
-| Clients | One workspace per client. A DPCO sees every client's tier, return readiness, next obligation and open incidents on one page. |
-| Classification | GAID tier (UHL / EHL / OHL) from sector and six-month data-subject volume. The higher of the two applies. |
-| Audit return | 14 requirements checked against the records rather than ticked by hand: registration, DPO, records of processing, retention, DPIAs, AI parameters (GAID Arts. 43–44), processor agreements, transfers, security, breach register, requests and training. |
-| Filing pack | Markdown preparation pack with a readiness summary, gaps and registers, for the DPCO to review and file through the NDPC portal. |
-| Processing | Record of processing with lawful basis (NDPA s.25). Shows live whether an activity triggers a DPIA. |
-| Vendors | Processor agreements (NDPA s.29, GAID Art. 34) and the transfer basis for any data leaving Nigeria (NDPA ss.41–43). |
-| Assessments | DPIA screening questions with inherent-risk scoring, linked to the activity or AI system they cover. |
-| AI systems | Register of AI systems, including tools found by discovery. Each system is classified against NDPA s.37, GAID Arts. 28 and 43–44, the CBN AML circular, Kenya DPA s.35, POPIA s.71, the EU AI Act, ISO/IEC 42001 and the NIST AI RMF. |
-| Incidents | Breach register with a live clock for each regulator (NDPC 72h, ODPC 72h, Information Regulator, and others). Records each notification or each decision that notification is not required. |
-| Requests | Access, erasure, objection, automated-decision review and complaints, with deadlines set by the requester's jurisdiction. |
-| Control map | One evidence record traced across NDPA/GAID, POPIA, Kenya DPA, ISO 27701, ISO 42001 and the EU AI Act. |
-| Rules and sources | Every threshold, window and fee, with its source and how far it has been checked. |
+| Compliance | Each requirement is evaluated per law and derived from the records, not from checkboxes. Each one shows its section, its status and which module fixes it. Reports export per law; the Nigerian report is a Compliance Audit Return preparation pack. |
+| Action plan | One fix that clears gaps under several laws appears once, with every law it satisfies. Any action can become a task with an owner and a due date. |
+| Data map (ROPA) | Processing activities linked to systems, vendors and data categories. Each activity page shows, per law, the lawful basis and citation, any sensitive-data condition needed, whether a DPIA is required and why, and transfer status. The flows view and the ROPA CSV have one column set per law. |
+| Vendors | Risk tier from data sensitivity, location, certifications and breach history, which sets the review cycle (12, 24 or 36 months). |
+| Assessments | DPIA, legitimate-interest assessment, transfer impact assessment and AI impact assessment. The processing description is pulled from the data map. Risks are suggested from a library based on the activity's facts and scored on a likelihood × severity matrix. Sign-off suggests an outcome from the residual risk and names the regulators that need prior consultation. |
+| AI systems | Each system is classified against the selected laws (NDPA s.37, Kenya DPA s.35, POPIA s.71, GDPR Art. 22), GAID Arts. 43–44, the CBN AML circular and the EU AI Act, with ISO/IEC 42001 and the NIST AI RMF as references. |
+| Incidents | A harm assessment drives each regulator's test (any compromise, risk, real risk or high risk). Each regulator gets its own clock, and each notification or decision not to notify is recorded. Draft notices are generated per regulator, and the incident has a timeline. |
+| Requests | Shows whether the right exists under the requester's law (POPIA has no portability right, for example), the deadline and any extension, identity verification, and a checklist of systems to search. |
+| Governance | Policies (including the PAIA manual for South Africa), training, and officers per law. |
+| Rules and sources | Every pack, rule by rule, with provenance. |
 | Activity log | Who changed what and when. The server keeps it append-only. |
 
 ### Every rule shows where it comes from
 
-Every rule in `packages/core/src/rules.ts` and `ai.ts` carries a provenance tag, and the app displays it beside the rule:
+Rules carry a provenance tag, and the app displays it beside the rule:
 
 - **primary**: read from the statute or standard itself.
 - **secondary**: taken from practitioner or press summaries. The GAID tier thresholds are in this category.
-- **unverified**: a placeholder until counsel checks it. Some request-response periods are in this category.
+- **unverified**: a placeholder until counsel checks it.
 
-Before any client relies on a secondary or unverified rule, check it against the primary text and update the rule pack.
+Before any client relies on a secondary or unverified rule, check it against the primary text and update the pack.
 
 ## Architecture
 
 ```
-packages/core   Domain model, rule packs, tier engine, readiness, AI classification, clocks,
-                control map, filing pack, validation. Pure TypeScript, no I/O. Unit-tested.
+packages/core   Domain model, jurisdiction packs, field definitions with visibility rules,
+                compliance engine, assessments, breach and request logic, AI classification,
+                exports and migrations. Pure TypeScript, no I/O. Unit-tested.
 apps/web        React app. One UI with three storage modes:
                   api       talks to apps/api (production)
                   artifact  claude.ai artifact database (the hosted browser version)
@@ -45,7 +65,7 @@ apps/api        Fastify + PostgreSQL. Sessions, roles, tenant isolation by row-l
                 security, append-only audit log, the same validation and rules as the web app.
 ```
 
-The web app and the API both import their rules and validation from `@tenet/core`, so the two cannot drift apart.
+The web app and the API both import their rules, field definitions and validation from `@tenet/core`, so the two cannot drift apart. Records saved by v0.1 are migrated when they are loaded.
 
 ## Run it
 
@@ -56,7 +76,7 @@ cp .env.example .env        # set real passwords
 docker compose up --build
 ```
 
-Open http://localhost:4000 and create your organisation. Sign-up closes once the first organisation exists (`ALLOW_SIGNUP=first-run`). After that, admins add colleagues through `POST /api/users`, with the role admin, editor or viewer.
+Open http://localhost:4000 and create your organisation. Sign-up closes once the first organisation exists (`ALLOW_SIGNUP=first-run`). Set `ALLOW_SIGNUP=true` to let further organisations sign up, which is what a hosted multi-tenant service needs. Admins add colleagues from the Team screen, with the role admin, editor or viewer.
 
 ### For development
 
@@ -71,7 +91,7 @@ psql -U postgres -c "CREATE ROLE tenet LOGIN PASSWORD 'tenet' NOSUPERUSER NOBYPA
 psql -U postgres -c "CREATE DATABASE tenet_dev OWNER tenet"
 
 export DATABASE_URL=postgres://tenet:tenet@localhost:5432/tenet_dev
-npm run seed -w @tenet/api        # demo@tenet.local / demo-password-123 with a sample client
+npm run seed                      # demo@tenet.local / demo-password-123, advisory, with a sample client
 npm run dev -w @tenet/api         # API on :4000
 npm run dev -w @tenet/web         # web on :5173, proxies /api
 ```
@@ -85,16 +105,15 @@ npm run test -w @tenet/core
 TEST_DATABASE_URL=postgres://tenet:tenet@localhost:5432/tenet_test npm run test -w @tenet/api
 ```
 
-The API tests run against a real PostgreSQL. They prove that one organisation cannot read, overwrite or delete another's clients, even knowing their ids. They also prove that the audit log cannot be edited, viewers cannot write, and failed logins are rate-limited.
+The core tests cover jurisdiction gating, sensitivity per law, registration, transfers, breach duties, request rights, assessments, the merged action plan, AI classification, exports and migration. The API tests run against a real PostgreSQL. They prove that one organisation cannot read, overwrite or delete another's entities, even knowing their ids. They also prove that records are validated against the entity's selected laws, that values for a deselected law are kept but not reported, that the audit log cannot be edited, that viewers cannot write, and that failed logins are rate-limited.
 
 ### Rebuild the browser version
 
 ```bash
-npm run build:artifact -w @tenet/web
-node scripts/artifact-page.mjs apps/web/dist-artifact/index.html tenet-app.html
+npm run build:artifact            # writes dist-artifact.html
 ```
 
-Republish `tenet-app.html` to the same artifact. Its saved data is kept across republishes.
+Republish `dist-artifact.html` to the same artifact. Its saved data is kept across republishes.
 
 ## API
 
@@ -102,31 +121,32 @@ All routes are under `/api` and need a session cookie, apart from health and the
 
 | Method | Path | Notes |
 |---|---|---|
-| POST | `/auth/signup`, `/auth/login`, `/auth/logout` | scrypt password hashes; session tokens are stored hashed; login is rate-limited |
-| GET | `/me`, `/users` · POST `/users` | creating users is admin only |
-| GET | `/workspaces` · PUT/DELETE `/workspaces/:id` | deleting is admin only |
-| GET | `/workspaces/:id/dataset` | everything for one client |
-| PUT/DELETE | `/workspaces/:id/:collection/:recordId` | collections: activities, vendors, assessments, incidents, requests, aiSystems |
-| GET | `/workspaces/:id/readiness` | audit-return readiness as JSON, for integrations |
-| GET | `/workspaces/:id/filing-pack` | Markdown; writes an audit entry |
+| POST | `/auth/signup`, `/auth/login`, `/auth/logout` | sign-up takes `mode`: `in-house` or `advisory`. scrypt password hashes; session tokens are stored hashed; login is rate-limited |
+| GET | `/me` | user and organisation, including its mode |
+| PATCH | `/org` | change the organisation's name or mode; admin only |
+| GET · POST | `/users` | creating users is admin only |
+| GET | `/workspaces` · PUT/DELETE `/workspaces/:id` | deleting is admin only; pack fields are validated only for selected laws |
+| GET | `/workspaces/:id/dataset` | everything for one entity |
+| PUT/DELETE | `/workspaces/:id/:collection/:recordId` | activities, systems, vendors, assessments, incidents, requests, aiSystems, policies, trainings, tasks |
+| GET | `/workspaces/:id/compliance` | requirement status per selected law, as JSON |
+| GET | `/workspaces/:id/report/:code` | Markdown report for one selected law; writes an audit entry |
 | GET | `/workspaces/:id/audit` | activity log |
-| POST | `/workspaces/import` | import a dataset (used for the sample client) |
+| POST | `/workspaces/import` | import a dataset (used for the sample entity) |
 
 ## Status
 
-Version 0.1. The core workflow works end to end, but the following are not built yet:
+Version 0.2. Not built yet:
 
+- Evidence attachments (file uploads)
 - Data discovery connectors
-- Consent management
-- A WhatsApp or web intake form for data subjects
-- An admin screen for users (there is an API for it)
-- Email notifications
-- PDF or Word export of the filing pack
-- POPIA and Kenya content beyond the rules listed
-- SSO
+- Consent and cookie management
+- A web or WhatsApp intake form for data subjects
+- Email reminders
+- PDF or Word export of reports
+- SSO and multi-factor authentication
 
 `docs/ROADMAP.md` lists the order these come in.
 
-Tenet produces preparation material for qualified review. It does not file with the NDPC and does not give legal advice.
+Tenet produces preparation material for qualified review. It does not file with any regulator and does not give legal advice.
 
 Copyright © 2026. All rights reserved.

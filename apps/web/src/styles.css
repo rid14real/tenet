@@ -187,3 +187,40 @@ textarea { min-height: 84px; resize: vertical; }
 .kv .k { font-size: 12px; color: var(--muted); }
 .kv .v { font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* v0.2 additions */
+.nav.vertical { flex-direction: column; flex-wrap: nowrap; }
+.nav.vertical button { flex: 0 0 auto; min-height: 38px; }
+.rail-ws { display: flex; flex-direction: column; gap: 6px; padding: 0 6px; }
+.rail-ws select { min-height: 40px; border-radius: 8px; border: 1px solid #2f4a42; background: var(--rail-active); color: var(--rail-ink); padding: 0 8px; }
+.ws-name { font-weight: 600; color: #fff; }
+.jx { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.jxchip { font-family: var(--mono); font-size: 11px; padding: 1px 7px; border-radius: 5px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); white-space: nowrap; }
+.rail .jxchip { background: transparent; border-color: #2f4a42; color: var(--rail-ink); }
+.subtabs { display: flex; gap: 4px; flex-wrap: wrap; }
+.subtabs button { min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; font-weight: 500; display: inline-flex; gap: 8px; align-items: center; }
+.subtabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.subtabs .count { font-family: var(--mono); font-size: 11px; opacity: 0.7; }
+.jxgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.jxcard { text-align: left; color: inherit; font-weight: 400; gap: 8px; }
+.jxscores { display: flex; flex-wrap: wrap; gap: 6px; }
+.jxscore { font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line-soft); }
+.choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.choice { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 14px 16px; cursor: pointer; display: flex; flex-direction: column; gap: 6px; color: var(--ink); }
+.choice span { color: var(--muted); font-size: 13px; }
+.choice[aria-checked="true"] { border: 2px solid var(--accent); background: var(--accent-soft); }
+.risk { border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.risk select { width: auto; min-height: 34px; padding: 2px 6px; }
+.matrix { display: grid; grid-template-columns: 18px 1fr; grid-template-rows: 1fr 18px; gap: 4px; }
+.matrix-y { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 11px; color: var(--muted); text-align: center; }
+.matrix-x { grid-column: 2; font-size: 11px; color: var(--muted); text-align: center; }
+.matrix-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 3px; }
+.mcell { aspect-ratio: 1; border-radius: 4px; display: flex; flex-wrap: wrap; gap: 2px; align-items: center; justify-content: center; padding: 2px; }
+.m-low { background: var(--ok-bg); } .m-med { background: var(--warn-bg); } .m-high { background: var(--bad-bg); } .m-crit { background: color-mix(in srgb, var(--bad) 35%, var(--bad-bg)); }
+.mdot { font-family: var(--mono); font-size: 10px; width: 16px; height: 16px; border-radius: 50%; background: var(--ink); color: var(--bg); display: inline-flex; align-items: center; justify-content: center; }
+.mdot.res { background: var(--surface); color: var(--ink); border: 1.5px solid var(--ink); }
+.flag { font-family: var(--mono); font-size: 11px; padding: 1px 6px; border-radius: 4px; margin-right: 4px; background: var(--surface-2); border: 1px solid var(--line); }
+.flag.abroad { background: var(--warn-bg); color: var(--warn); border-color: transparent; }
+.clockrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+input[type="search"] { min-height: 40px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); padding: 0 10px; }
+.err { color: var(--bad); }

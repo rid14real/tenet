@@ -1,16 +1,18 @@
 import { useState } from 'react';
+import type { OrgSettings } from '@tenet/core';
 import type { Store } from '../store/types';
 
 export function Login({ store, onDone }: { store: Store; onDone: () => void }) {
   const [mode, setMode] = useState<'in' | 'up'>('in');
-  const [f, setF] = useState({ email: '', password: '', name: '', orgName: '' });
+  const [f, setF] = useState({ email: '', password: '', name: '', orgName: '', orgMode: 'in-house' as OrgSettings['mode'] });
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
-  const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement>) => setF((s) => ({ ...s, [k]: e.target.value }));
+  const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setF((s) => ({ ...s, [k]: e.target.value }));
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); setErr(''); setBusy(true);
     try {
-      if (mode === 'in') await store.signIn!(f.email, f.password); else await store.signUp!(f);
+      if (mode === 'in') await store.signIn!(f.email, f.password);
+      else await store.signUp!({ email: f.email, password: f.password, name: f.name, orgName: f.orgName, mode: f.orgMode });
       onDone();
     } catch (x) { setErr((x as Error).message); } finally { setBusy(false); }
   };
@@ -21,7 +23,8 @@ export function Login({ store, onDone }: { store: Store; onDone: () => void }) {
         <h1>{mode === 'in' ? 'Sign in' : 'Create your organisation'}</h1>
         {mode === 'up' && (
           <>
-            <div className="field"><label htmlFor="l-org">Organisation (DPCO or company)</label><input id="l-org" type="text" value={f.orgName} onChange={set('orgName')} required /></div>
+            <div className="field"><label htmlFor="l-mode">How you will use Tenet</label><select id="l-mode" value={f.orgMode} onChange={set('orgMode')}><option value="in-house">For our own organisation</option><option value="advisory">For clients (DPCO, DPO service, law firm)</option></select></div>
+            <div className="field"><label htmlFor="l-org">{f.orgMode === 'advisory' ? 'Firm name' : 'Organisation name'}</label><input id="l-org" type="text" value={f.orgName} onChange={set('orgName')} required /></div>
             <div className="field"><label htmlFor="l-name">Your name</label><input id="l-name" type="text" value={f.name} onChange={set('name')} required /></div>
           </>
         )}

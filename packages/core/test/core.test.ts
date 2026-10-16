@@ -1,161 +1,222 @@
 import { describe, expect, it } from 'vitest';
 import {
-  WORKSPACE_FIELDS, COLLECTION_META, auditReturnDue, breachClocks, carReadiness, classifyAI, classifyTier,
-  dpiaInherentRisk, dpiaTriggers, filingPackMarkdown, formatDuration, requestClock, sampleDataset, validateRecord,
+  COLLECTION_META, PACKS, WORKSPACE_FIELDS, actionPlan, activityFacts, assessmentMarkdown, auditReturnDue, breachDuties, classifyAI,
+  complianceReportMarkdown, evaluateJurisdiction, formatDuration, harmAssessment, isVisible, keRegistrationRequired, migrateDataset,
+  ngTier, requestStatus, reviewAssessment, ropaCsv, sampleDataset, suggestedRisks, upcoming, validateRecord, vendorRisk,
+  type Dataset, type JurisdictionCode,
 } from '../src/index.js';
 
-const NOW = new Date('2026-10-15T12:00:00Z');
+const NOW = new Date('2026-10-16T12:00:00Z');
 let n = 0;
 const ids = () => `id-${++n}`;
+const sample = (): Dataset => sampleDataset(NOW, ids);
+const req = (ds: Dataset, code: JurisdictionCode, key: string) => evaluateJurisdiction(code, ds, NOW).requirements.find((r) => r.key === key);
 
-describe('tier classification', () => {
+describe('jurisdiction gating', () => {
+  it('only evaluates selected jurisdictions', () => {
+    const ds = sample();
+    ds.workspace.jurisdictions = ['ZA'];
+    const keys = evaluateJurisdiction('ZA', ds, NOW).requirements.map((r) => r.key);
+    expect(keys).not.toContain('ng-registration');
+    expect(keys).not.toContain('ng-return');
+    expect(keys).toContain('za-io');
+    expect(keys).toContain('za-paia');
+    expect(actionPlan(ds, NOW).every((a) => a.jurisdictions.every((j) => j === 'ZA'))).toBe(true);
+  });
+  it('keeps hidden jurisdiction values but ignores them', () => {
+    const ds = sample();
+    ds.workspace.jurisdictions = ['ZA'];
+    expect(ds.workspace.jx.NG?.registrationNumber).toBe('SAMPLE-NG-0001');
+    expect(upcoming(ds, NOW, 365).some((d) => d.code === 'NG')).toBe(false);
+  });
+  it('limits jurisdiction choices on records to the entity’s jurisdictions', () => {
+    const ws = sample().workspace; ws.jurisdictions = ['KE'];
+    const r = validateRecord(COLLECTION_META.requests.fields, { requester: 'x', type: 'access', jurisdiction: 'NG', receivedAt: NOW.toISOString() }, [], { workspace: ws });
+    expect(r.ok).toBe(false);
+    expect(r.errors.jurisdiction).toBeDefined();
+  });
+  it('offers lawful bases with each law’s citation and flags gaps', () => {
+    const f = COLLECTION_META.activities.fields.find((x) => x.key === 'lawfulBasis')!;
+    const ws = sample().workspace; ws.jurisdictions = ['NG', 'EG'];
+    const li = f.optionsFn!({ workspace: ws }).find((o) => o.value === 'legitimate-interests')!;
+    expect(li.label).toContain('NDPA s.25(1)(b)');
+    expect(li.label).toContain('not in PDPL');
+  });
+});
+
+describe('sensitive data differs by law', () => {
+  it('treats marital and family data as sensitive in Kenya only', () => {
+    const ds = sample();
+    const credit = ds.activities.find((a) => a.name === 'Loan credit scoring')!;
+    const f = activityFacts(credit, ds);
+    expect(f.perJx.find((p) => p.code === 'KE')!.sensitive).toEqual(['marital-family']);
+    expect(f.perJx.find((p) => p.code === 'NG')!.sensitive).toEqual([]);
+    expect(req(ds, 'KE', 'special-condition')!.status).toBe('missing');
+    expect(req(ds, 'NG', 'special-condition')!.detail).not.toContain('Loan credit scoring');
+  });
+  it('shows the special-condition field only when needed', () => {
+    const f = COLLECTION_META.activities.fields.find((x) => x.key === 'specialCondition')!;
+    const ws = sample().workspace;
+    expect(isVisible(f, { dataCategoryIds: ['name'], jurisdictions: ['NG'] }, { workspace: ws })).toBe(false);
+    expect(isVisible(f, { dataCategoryIds: ['marital-family'], jurisdictions: ['NG'] }, { workspace: ws })).toBe(false);
+    expect(isVisible(f, { dataCategoryIds: ['marital-family'], jurisdictions: ['KE'] }, { workspace: ws })).toBe(true);
+    expect(isVisible(f, { dataCategoryIds: ['criminal'], jurisdictions: ['ZA'] }, { workspace: ws })).toBe(true);
+  });
+});
+
+describe('registration and officers', () => {
+  it('applies the Kenyan exemption only outside listed sectors', () => {
+    const ws = sample().workspace;
+    expect(keRegistrationRequired(ws).required).toBe(true);
+    ws.sector = 'saas'; ws.employees = 5; ws.jx.KE = { turnoverBand: 'under-5m' };
+    expect(keRegistrationRequired(ws).required).toBe(false);
+  });
+  it('flags a Kenyan certificate close to expiry', () => {
+    expect(req(sample(), 'KE', 'ke-registration')!.status).toBe('partial');
+  });
+  it('requires an EU representative for an entity established in Nigeria', () => {
+    const ds = sample();
+    expect(req(ds, 'EU', 'eu-representative')!.status).toBe('missing');
+    ds.workspace.establishment = 'IE';
+    expect(req(ds, 'EU', 'eu-representative')!.status).toBe('na');
+  });
+  it('uses the right officer title', () => {
+    expect(req(sample(), 'ZA', 'za-io')!.title).toContain('Information Officer');
+    expect(req(sample(), 'NG', 'officer')!.title).toContain('Data Protection Officer');
+  });
+});
+
+describe('Nigeria tier and return', () => {
   it('takes the higher of sector and volume', () => {
-    expect(classifyTier('mfb', 12400).tier).toBe('UHL');
-    expect(classifyTier('mfb', 800).tier).toBe('EHL');
-    expect(classifyTier('bank', 10).tier).toBe('UHL');
-    expect(classifyTier('other', 999).tier).toBe('OHL');
-    expect(classifyTier('other', 1000).tier).toBe('EHL');
-    expect(classifyTier('other', 5000).tier).toBe('EHL');
-    expect(classifyTier('other', 5001).tier).toBe('UHL');
-  });
-  it('only UHL and EHL file an audit return', () => {
-    expect(classifyTier('other', 10).filesAuditReturn).toBe(false);
-    expect(classifyTier('hospital', 10).filesAuditReturn).toBe(true);
-  });
-  it('carries provenance', () => {
-    expect(classifyTier('bank', 1).provenance.confidence).toBe('secondary');
+    expect(ngTier('mfb', 12400).tier).toBe('UHL');
+    expect(ngTier('mfb', 800).tier).toBe('EHL');
+    expect(ngTier('other', 999).tier).toBe('OHL');
+    expect(ngTier('other', 5001).tier).toBe('UHL');
   });
   it('dates the return for cycle N in March of N+1', () => {
     expect(auditReturnDue(2026).toISOString().slice(0, 10)).toBe('2027-03-31');
   });
 });
 
-describe('DPIA', () => {
-  it('triggers on sensitive data and automated decisions', () => {
-    const t = dpiaTriggers({ sensitive: true, children: false, automatedDecisions: true, largeScaleMonitoring: false, newTechnology: false, volume: 10, crossBorder: false });
-    expect(t.map((x) => x.id)).toEqual(['sensitive', 'automated']);
+describe('transfers and vendors', () => {
+  it('evaluates transfers from each jurisdiction’s point of view', () => {
+    const ds = sample();
+    const ng = req(ds, 'NG', 'transfers')!;
+    expect(ng.status).toBe('missing'); // support assistant in the US, no basis
+    expect(ng.detail).toContain('Support assistant (US)');
+    const eu = req(ds, 'EU', 'transfers')!;
+    expect(eu.detail).not.toContain('Core banking'); // the core vendor carries SCCs
+    expect(eu.detail).not.toContain('Sentra'); // Ireland is inside the EEA
+    expect(eu.status).toBe('missing');
+    ds.vendors.find((v) => v.name === 'Generic LLM API')!.transferMechanism = 'approved-instrument';
+    expect(req(ds, 'NG', 'transfers')!.status).toBe('partial'); // Sentra still awaiting NDPC approval
+    expect(req(ds, 'EU', 'transfers')!.status).toBe('met');
   });
-  it('does not trigger for ordinary small processing', () => {
-    expect(dpiaTriggers({ sensitive: false, children: false, automatedDecisions: false, largeScaleMonitoring: false, newTechnology: false, volume: 100, crossBorder: true })).toHaveLength(0);
-  });
-  it('scores inherent risk', () => {
-    expect(dpiaInherentRisk({}).level).toBe('low');
-    expect(dpiaInherentRisk({ 'q-sensitive': true, 'q-scale': true }).level).toBe('medium');
-    expect(dpiaInherentRisk({ 'q-sensitive': true, 'q-children': true, 'q-automated': true }).level).toBe('high');
-  });
-});
-
-describe('clocks', () => {
-  it('runs the NDPC 72-hour clock from awareness', () => {
-    const inc = { id: 'i', title: 't', awareAt: '2026-10-14T12:00:00Z', affectedCount: 1, dataCategories: [], jurisdictions: ['NG', 'ZA'] as const, highRiskToSubjects: false, status: 'open' as const, createdAt: '', updatedAt: '' };
-    const [ng, za] = breachClocks({ ...inc, jurisdictions: [...inc.jurisdictions] }, NOW);
-    expect(ng.state).toBe('running');
-    expect(ng.msRemaining).toBe(48 * 3_600_000);
-    expect(za.state).toBe('no-fixed-window');
-  });
-  it('marks overdue and notified', () => {
-    const base = { id: 'i', title: 't', awareAt: '2026-10-10T00:00:00Z', affectedCount: 1, dataCategories: [], jurisdictions: ['NG' as const], highRiskToSubjects: false, status: 'open' as const, createdAt: '', updatedAt: '' };
-    expect(breachClocks(base, NOW)[0].state).toBe('overdue');
-    expect(breachClocks({ ...base, notified: { NG: '2026-10-11T00:00:00Z' } }, NOW)[0].state).toBe('notified');
-  });
-  it('formats durations', () => {
-    expect(formatDuration(40 * 3_600_000 + 45 * 60_000 + 12_000)).toBe('40h 45m 12s');
-    expect(formatDuration(120 * 3_600_000)).toBe('5d 0h 00m');
-    expect(formatDuration(5 * 3_600_000 + 61_000)).toBe('5h 01m 01s');
-    expect(formatDuration(-3_600_000)).toBe('1h 00m 00s overdue');
-  });
-  it('computes request deadlines per jurisdiction', () => {
-    const r = { id: 'r', type: 'access' as const, requester: 'x', receivedAt: '2026-10-01T00:00:00Z', channel: 'email' as const, jurisdiction: 'KE' as const, identityVerified: true, status: 'in-progress' as const, createdAt: '', updatedAt: '' };
-    expect(requestClock(r, NOW).state).toBe('overdue');
-    expect(requestClock({ ...r, jurisdiction: 'NG' }, NOW).state).toBe('on-track');
-    expect(requestClock({ ...r, jurisdiction: 'ZA' }, NOW).state).toBe('no-fixed-window');
+  it('scores vendor risk', () => {
+    const ds = sample();
+    expect(vendorRisk(ds.vendors.find((v) => v.name === 'BulkReach Messaging')!, ds, NOW).tier).toBe('high');
+    expect(vendorRisk(ds.vendors.find((v) => v.name === 'Cloud hosting (Cape Town region)')!, ds, NOW).tier).not.toBe('high');
   });
 });
 
-describe('AI classification', () => {
-  const ds = sampleDataset(NOW, ids);
-  const ctx = { sector: ds.workspace.sector, vendors: ds.vendors, assessments: ds.assessments };
-  it('flags solely automated credit scoring as high risk under NDPA s.37', () => {
-    const c = classifyAI(ds.aiSystems[0], ctx);
-    expect(c.risk).toBe('high');
-    expect(c.obligations.find((o) => o.id === 'ndpa-37')?.status).toBe('open');
+describe('breaches', () => {
+  it('applies each law’s notification test', () => {
+    const ds = sample();
+    const inc = { ...ds.incidents[0], jurisdictions: ['NG', 'ZA'] as JurisdictionCode[], dataUnintelligible: true };
+    const d = breachDuties(inc, ds, NOW);
+    expect(harmAssessment(inc, ds).level).toBe('none');
+    expect(d.find((x) => x.code === 'NG')!.regulatorRequired).toBe(false);
+    expect(d.find((x) => x.code === 'ZA')!.regulatorRequired).toBe(true); // POPIA s.22 has no risk threshold
   });
-  it('applies the CBN AML circular to a microfinance bank', () => {
-    const c = classifyAI(ds.aiSystems[1], ctx);
-    expect(c.obligations.some((o) => o.id === 'cbn-aml')).toBe(true);
-    expect(c.risk).toBe('high');
-  });
-  it('requires a transfer basis for an offshore LLM', () => {
-    const c = classifyAI(ds.aiSystems[2], ctx);
-    expect(c.obligations.find((o) => o.id === 'ndpa-41')?.status).toBe('open');
-    expect(c.risk).toBe('limited');
-  });
-  it('marks discovered shadow AI as unassessed', () => {
-    expect(classifyAI(ds.aiSystems[3], ctx).risk).toBe('unassessed');
-  });
-  it('adds EU AI Act duties only when used in the EU', () => {
-    const sys = { ...ds.aiSystems[0], markets: ['NG', 'EU'] as ('NG' | 'EU')[] };
-    expect(classifyAI(sys, ctx).obligations.some((o) => o.id === 'eu-high')).toBe(true);
-    expect(classifyAI(ds.aiSystems[0], ctx).obligations.some((o) => o.framework === 'EU AI Act')).toBe(false);
+  it('runs the 72-hour clocks', () => {
+    const ds = sample();
+    const d = breachDuties(ds.incidents[0], ds, NOW);
+    expect(d.map((x) => x.code)).toEqual(['NG', 'KE']);
+    expect(d[0].state).toBe('running');
+    expect(formatDuration(d[0].msRemaining!)).toMatch(/^40h/);
   });
 });
 
-describe('audit return readiness', () => {
-  it('is computed from the records', () => {
-    const ds = sampleDataset(NOW, ids);
-    const car = carReadiness(ds, NOW);
-    const by = Object.fromEntries(car.requirements.map((r) => [r.id, r.status]));
-    expect(by.registration).toBe('met');
-    expect(by.dpo).toBe('met');
-    expect(by.ropa).toBe('partial'); // marketing has no lawful basis
-    expect(by.retention).toBe('partial');
-    expect(by.dpia).toBe('missing'); // scoring in review; CCTV, payroll none
-    expect(by['processor-agreements']).toBe('partial'); // SMS vendor unsigned
-    expect(by.transfers).toBe('missing'); // LLM vendor has none
-    expect(by['breach-register']).toBe('partial'); // NDPC clock running
-    expect(by.security).toBe('missing');
-    expect(car.score).toBeGreaterThan(0);
-    expect(car.score).toBeLessThan(100);
+describe('requests', () => {
+  it('warns when a right does not exist under the law', () => {
+    const ds = sample();
+    const s = requestStatus(ds.requests.find((r) => r.jurisdiction === 'ZA')!, ds, NOW);
+    expect(s.available).toBe(false);
+    expect(s.note).toContain('POPIA');
   });
-  it('improves as gaps are fixed', () => {
-    const ds = sampleDataset(NOW, ids);
-    const before = carReadiness(ds, NOW).score;
-    ds.workspace.attestations = { ...ds.workspace.attestations, securityMeasures: { value: true }, training: { value: true } };
-    ds.vendors = ds.vendors.map((v) => ({ ...v, dpaSigned: true, transferMechanism: v.country === 'NG' ? 'not-needed' : 'approved-instrument' }));
-    expect(carReadiness(ds, NOW).score).toBeGreaterThan(before);
-  });
-  it('treats an empty workspace as missing records, not ready', () => {
-    const ds = sampleDataset(NOW, ids);
-    const empty = { ...ds, activities: [], vendors: [], assessments: [], incidents: [], requests: [], aiSystems: [], workspace: { ...ds.workspace, attestations: {}, registrationNumber: undefined, dpoName: undefined } };
-    const car = carReadiness(empty, NOW);
-    expect(car.requirements.find((r) => r.id === 'ropa')?.status).toBe('missing');
-    expect(car.score).toBeLessThan(30);
+  it('lists the systems to search', () => {
+    const ds = sample();
+    const s = requestStatus(ds.requests[0], ds, NOW);
+    expect(s.systems.map((x) => x.name)).toEqual(expect.arrayContaining(['Core banking', 'Mobile app backend']));
   });
 });
 
-describe('filing pack', () => {
-  it('includes summary, gaps and registers', () => {
-    const md = filingPackMarkdown(sampleDataset(NOW, ids), { now: NOW, preparedBy: 'Meridian Compliance' });
-    expect(md).toContain('# Compliance Audit Return: preparation pack');
-    expect(md).toContain('Gaps for DPCO review');
-    expect(md).toContain('Customer onboarding and KYC');
-    expect(md).toContain('GAID Arts. 43–44');
-    expect(md).toContain('not an NDPC form');
+describe('assessments', () => {
+  it('suggests risks from the data map', () => {
+    const ds = sample();
+    const a = ds.assessments.find((x) => x.kind === 'aia')!;
+    const ids = suggestedRisks(a, ds).map((r) => r.libraryId ?? r.id);
+    expect(ids).toEqual(expect.arrayContaining(['r-auto-contest', 'r-ai-bias']));
+  });
+  it('requires prior consultation only where the law provides for it', () => {
+    const ds = sample();
+    const a = ds.assessments.find((x) => x.kind === 'aia')!;
+    const r = reviewAssessment(a, ds);
+    expect(r.residualLevel).toBe('high');
+    expect(r.consult.map((c) => c.code)).toEqual(['KE']);
+    expect(r.suggestedOutcome).toBe('consult-regulator');
+  });
+  it('exports a report', () => {
+    const ds = sample();
+    expect(assessmentMarkdown(ds.assessments[0], ds)).toContain('Risks and measures');
   });
 });
 
-describe('validation', () => {
-  it('coerces and rejects', () => {
-    const r = validateRecord(COLLECTION_META.vendors.fields, { name: 'X', service: 'Y', country: 'US', dpaSigned: 'true' });
-    expect(r.ok).toBe(true);
-    expect(r.value.dpaSigned).toBe(true);
-    expect(r.value.role).toBe('processor');
-    const bad = validateRecord(COLLECTION_META.vendors.fields, { name: '', service: 'Y', country: 'ZZ' });
-    expect(bad.ok).toBe(false);
-    expect(Object.keys(bad.errors)).toEqual(expect.arrayContaining(['name', 'country']));
+describe('action plan', () => {
+  it('merges one fix across several laws', () => {
+    const plan = actionPlan(sample(), NOW);
+    const mk = plan.find((a) => a.key === 'marketing')!;
+    expect(mk.jurisdictions.sort()).toEqual(['KE', 'NG', 'ZA']);
+    expect(plan[0].severity).toBe('high');
   });
-  it('validates the workspace profile', () => {
-    const r = validateRecord(WORKSPACE_FIELDS, { name: 'A', sector: 'bank', dataSubjects6m: '-4', cycleYear: 2026 });
-    expect(r.errors.dataSubjects6m).toBeDefined();
+});
+
+describe('AI', () => {
+  it('only applies regimes the entity has selected', () => {
+    const ds = sample();
+    const sys = ds.aiSystems[0];
+    const all = classifyAI(sys, { sector: 'fintech', jurisdictions: ['NG', 'KE'], vendors: ds.vendors, assessments: ds.assessments });
+    expect(all.obligations.map((o) => o.ref)).toEqual(expect.arrayContaining(['NDPA s.37', 'Kenya DPA s.35']));
+    const keOnly = classifyAI(sys, { sector: 'fintech', jurisdictions: ['KE'], vendors: ds.vendors, assessments: ds.assessments });
+    expect(keOnly.obligations.some((o) => o.ref === 'NDPA s.37')).toBe(false);
+  });
+});
+
+describe('exports and migration', () => {
+  it('builds the NDPC pack and per-law reports', () => {
+    const ds = sample();
+    expect(complianceReportMarkdown(ds, 'NG', { now: NOW })).toContain('not an NDPC form');
+    const za = complianceReportMarkdown(ds, 'ZA', { now: NOW });
+    expect(za).toContain('POPIA compliance report');
+    expect(za).not.toContain('NDPC');
+    expect(ropaCsv(ds).split('\n')[0]).toContain('Kenya DPA sensitive personal data');
+  });
+  it('upgrades version 0.1 records', () => {
+    const old = {
+      workspace: { id: 'w', name: 'Old', sector: 'mfb', dataSubjects6m: 12400, jurisdictions: ['NG', 'KE'], registrationNumber: 'R1', cycleYear: 2026, dpoName: 'D', attestations: { dpoReports: { value: true } } },
+      activities: [{ id: 'a', name: 'KYC', purpose: 'p', lawfulBasis: 'public-interest', dataCategories: ['name', 'BVN'], volume: 1, status: 'active' }],
+      vendors: [{ id: 'v', name: 'V', service: 's', role: 'processor', country: 'NG', dpaSigned: true, transferMechanism: 'not-needed' }],
+    };
+    const ds = migrateDataset(old);
+    expect(ds.workspace.jx.NG?.registrationNumber).toBe('R1');
+    expect(ds.workspace.jx.NG?.dpoReportsFiled).toBe(true);
+    expect(ds.activities[0].dataCategoryIds).toEqual(expect.arrayContaining(['name', 'gov-id']));
+    expect(ds.activities[0].lawfulBasis).toBe('public-task');
+    expect(ds.vendors[0].transferMechanism).toBe('none');
+    expect(evaluateJurisdiction('NG', ds, NOW).requirements.length).toBeGreaterThan(5);
+  });
+  it('validates the entity profile', () => {
+    expect(validateRecord(WORKSPACE_FIELDS, { name: 'A', sector: 'bank', establishment: 'NG', jurisdictions: [] }).errors.jurisdictions).toBeDefined();
+    expect(Object.keys(PACKS)).toHaveLength(8);
   });
 });

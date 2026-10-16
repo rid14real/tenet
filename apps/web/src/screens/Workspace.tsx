@@ -1,227 +1,254 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  CONTROL_MAP, CONTROL_MAP_PROVENANCE, FRAMEWORKS, TIER_LABEL, WORKSPACE_FIELDS, auditReturnDue, breachClocks, carReadiness, classifyAI,
-  classifyTier, daysUntil, filingPackMarkdown, formatDuration, requestClock, sectorById, validateRecord,
-  type AttestationKey, type AuditEntry, type CarRequirement, type Workspace,
+  JURISDICTION_CODES, PACKS, RIGHTS, TIER_LABEL, WORKSPACE_FIELDS, actionPlan, auditReturnDue, categoryLabel, classifyAI, complianceReportMarkdown,
+  compliance, countryName, evaluateJurisdiction, isVisible, ngCycleYear, ngTierFor, overallScore, sectorById, upcoming, validateRecord, vendorRisk,
+  type AuditEntry, type FixIn, type JurisdictionCode, type Requirement, type Workspace,
 } from '@tenet/core';
 import { useApp, type Tab } from '../context';
-import { FieldInput, initialValues } from '../forms';
-import { now } from '../store/types';
-import { Bar, Pill, Prov, TierTag, fmtDate, fmtDateTime, fmtNum, useNow, type Tone } from '../ui';
-import { CollectionView } from './Collections';
+import { FieldInput, FormFields, initialValues } from '../forms';
+import { newId, now } from '../store/types';
+import { Bar, Empty, Jx, Pill, Prov, Status, SubTabs, TierTag, fmtDate, fmtDateTime, fmtNum, slug, useNow } from '../ui';
+import { AISystems } from './AISystems';
+import { Assessments } from './Assessments';
+import { DataMap } from './DataMap';
+import { Governance } from './Governance';
+import { Incidents } from './Incidents';
+import { Requests } from './Requests';
+import { Vendors } from './Vendors';
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: 'overview', label: 'Overview' }, { id: 'return', label: 'Audit return' }, { id: 'activities', label: 'Processing' },
-  { id: 'vendors', label: 'Vendors' }, { id: 'assessments', label: 'Assessments' }, { id: 'aiSystems', label: 'AI systems' },
-  { id: 'incidents', label: 'Incidents' }, { id: 'requests', label: 'Requests' }, { id: 'map', label: 'Control map' },
-  { id: 'log', label: 'Activity log' }, { id: 'profile', label: 'Profile' },
-];
+const FIX_TAB: Record<FixIn, Tab> = { profile: 'settings', activities: 'datamap', systems: 'datamap', vendors: 'vendors', assessments: 'assessments', incidents: 'incidents', requests: 'requests', aiSystems: 'ai', governance: 'governance' };
+const FIX_LABEL: Record<FixIn, string> = { profile: 'Open settings', activities: 'Open data map', systems: 'Open systems', vendors: 'Open vendors', assessments: 'Open assessments', incidents: 'Open incidents', requests: 'Open requests', aiSystems: 'Open AI systems', governance: 'Open governance' };
 
-export function WorkspaceScreen({ tab }: { tab: Tab }) {
-  const { ds, route, go } = useApp();
-  if (!ds || route.screen !== 'workspace') return <p className="muted">Loading client…</p>;
+export function WorkspaceScreen() {
+  const { ds, route, words } = useApp();
+  if (!ds || route.screen !== 'ws') return null;
   const w = ds.workspace;
-  const tier = classifyTier(w.sector, w.dataSubjects6m);
   return (
     <>
       <div className="head">
         <div>
-          <p className="eyebrow">{sectorById(w.sector).label} · {w.cycleYear} cycle</p>
+          <p className="eyebrow">{sectorById(w.sector).label} · established in {countryName(w.establishment)}</p>
           <h1>{w.name}</h1>
         </div>
-        <div className="row"><TierTag tier={tier.tier} /><span className="muted">{TIER_LABEL[tier.tier]}</span></div>
+        <Jx codes={w.jurisdictions} />
       </div>
-      {w.sample && <p className="notice">Sample client. Its records are examples for trying the platform, not real data.</p>}
-      <div className="tabs" role="tablist" aria-label="Client sections">
-        {TABS.map((t) => <button key={t.id} role="tab" aria-selected={tab === t.id} onClick={() => go({ screen: 'workspace', id: w.id, tab: t.id })}>{t.label}</button>)}
-      </div>
-      {tab === 'overview' && <Overview />}
-      {tab === 'return' && <AuditReturn />}
-      {(['activities', 'vendors', 'assessments', 'aiSystems', 'incidents', 'requests'] as const).includes(tab as never) && <CollectionView col={tab as 'activities'} />}
-      {tab === 'map' && <ControlMap />}
-      {tab === 'log' && <ActivityLog />}
-      {tab === 'profile' && <Profile />}
+      {w.sample && <p className="notice">Sample {words.entity}. Its records are examples for trying the platform, not real data.</p>}
+      {route.tab === 'overview' && <Overview />}
+      {route.tab === 'compliance' && <Compliance />}
+      {route.tab === 'actions' && <Actions />}
+      {route.tab === 'datamap' && <DataMap />}
+      {route.tab === 'vendors' && <Vendors />}
+      {route.tab === 'ai' && <AISystems />}
+      {route.tab === 'assessments' && <Assessments />}
+      {route.tab === 'incidents' && <Incidents />}
+      {route.tab === 'requests' && <Requests />}
+      {route.tab === 'governance' && <Governance />}
+      {route.tab === 'log' && <ActivityLog />}
+      {route.tab === 'settings' && <Settings />}
     </>
   );
 }
-
-const STATUS_TONE: Record<CarRequirement['status'], Tone> = { met: 'ok', partial: 'warn', missing: 'bad', na: 'none' };
-const STATUS_TEXT: Record<CarRequirement['status'], string> = { met: 'Met', partial: 'Partly met', missing: 'Missing', na: 'Not applicable' };
 
 function Overview() {
   const { ds, go } = useApp();
-  const t = useNow(1000);
+  const t = useNow(30_000);
   if (!ds) return null;
   const w = ds.workspace;
-  const tier = classifyTier(w.sector, w.dataSubjects6m);
-  const car = carReadiness(ds, t);
-  const due = auditReturnDue(w.cycleYear);
-  const clocks = ds.incidents.filter((i) => i.status !== 'closed').flatMap((i) => breachClocks(i, t).filter((c) => c.state === 'running' || c.state === 'overdue').map((c) => ({ i, c })));
-  const reqs = ds.requests.map((r) => ({ r, c: requestClock(r, t) })).filter((x) => x.c.state === 'overdue' || x.c.state === 'due-soon');
-  const ai = ds.aiSystems.filter((s) => s.status !== 'retired').map((s) => classifyAI(s, { sector: w.sector, vendors: ds.vendors, assessments: ds.assessments }));
-  const highAI = ai.filter((c) => c.risk === 'high' || c.risk === 'unassessed').length;
-  const top = car.requirements.filter((r) => r.status === 'missing' || r.status === 'partial').slice(0, 5);
+  const res = compliance(ds, t);
+  const plan = actionPlan(ds, t);
+  const soon = upcoming(ds, t, 60);
+  const highVendors = ds.vendors.filter((v) => vendorRisk(v, ds, t).tier === 'high').length;
+  const highAI = ds.aiSystems.filter((s) => s.status !== 'retired' && ['high', 'unassessed'].includes(classifyAI(s, { sector: w.sector, jurisdictions: w.jurisdictions, vendors: ds.vendors, assessments: ds.assessments }).risk)).length;
   const W = w.id;
-
-  return (
-    <div className="cols">
-      <div className="col-1">
-        <section className="card">
-          <h2>Classification</h2>
-          <div className="row"><TierTag tier={tier.tier} /><b>{TIER_LABEL[tier.tier]}</b></div>
-          <p>{tier.explanation}</p>
-          <p>{tier.filesAuditReturn ? `Files an annual Compliance Audit Return through a licensed DPCO. Due ${fmtDate(due.toISOString())} (${daysUntil(due, t)} days).` : 'Renews registration; no audit return at this tier.'}</p>
-          <Prov p={tier.provenance} />
-        </section>
-        <section className="card">
-          <h2>Needs attention now</h2>
-          {clocks.length === 0 && reqs.length === 0 && <p className="muted">No regulator clocks running and no requests close to their deadline.</p>}
-          {clocks.map(({ i, c }) => (
-            <button key={i.id + c.jurisdiction} className="req linkish" style={{ width: '100%', color: 'inherit', fontWeight: 400 }} onClick={() => go({ screen: 'workspace', id: W, tab: 'incidents', open: i.id })}>
-              <div className="grow"><b>{i.title}</b><div className="small muted">{c.regulator} · {c.windowText}</div></div>
-              <Pill tone={c.state === 'overdue' ? 'bad' : 'warn'}><span className="mono">{c.msRemaining != null ? formatDuration(c.msRemaining) : ''}</span></Pill>
-            </button>
-          ))}
-          {reqs.map(({ r, c }) => (
-            <button key={r.id} className="req linkish" style={{ width: '100%', color: 'inherit', fontWeight: 400 }} onClick={() => go({ screen: 'workspace', id: W, tab: 'requests', open: r.id })}>
-              <div className="grow"><b>{r.requester}</b><div className="small muted">{r.type.replace(/-/g, ' ')} request</div></div>
-              <Pill tone={c.state === 'overdue' ? 'bad' : 'warn'}>{c.state === 'overdue' ? `${Math.abs(c.daysLeft ?? 0)} days overdue` : `${c.daysLeft} days left`}</Pill>
-            </button>
-          ))}
-        </section>
-        <div className="tiles">
-          <button className="tile linkish" style={{ color: 'inherit' }} onClick={() => go({ screen: 'workspace', id: W, tab: 'activities' })}><div className="n">{ds.activities.length}</div><div className="l">Processing activities</div></button>
-          <button className="tile linkish" style={{ color: 'inherit' }} onClick={() => go({ screen: 'workspace', id: W, tab: 'vendors' })}><div className="n">{ds.vendors.length}</div><div className="l">Vendors</div></button>
-          <button className="tile linkish" style={{ color: 'inherit' }} onClick={() => go({ screen: 'workspace', id: W, tab: 'aiSystems' })}><div className="n">{ai.length}</div><div className="l">AI systems{highAI ? `, ${highAI} high or unassessed` : ''}</div></button>
-        </div>
-      </div>
-      <section className="card col-2">
-        <div className="row"><h2 className="grow">Audit return readiness</h2><span className="mono">{car.score}%</span></div>
-        <Bar pct={car.score} large />
-        <p className="muted">{car.met} met · {car.partial} partly met · {car.missing} missing, worked out from this client’s records.</p>
-        <h3>Biggest gaps</h3>
-        {top.length === 0 ? <p>No gaps. Generate the filing pack from the audit return tab.</p> : top.map((r) => (
-          <div key={r.id} className="req">
-            <div className="grow" style={{ minWidth: 220 }}><b>{r.title}</b><div className="small muted">{r.detail}</div><div className="small mono muted">{r.ref}</div></div>
-            <Pill tone={STATUS_TONE[r.status]}>{STATUS_TEXT[r.status]}</Pill>
-          </div>
-        ))}
-        <div><button className="btn primary" onClick={() => go({ screen: 'workspace', id: W, tab: 'return' })}>Open audit return</button></div>
-      </section>
-    </div>
+  const tile = (n: number, l: string, tab: Tab, warn?: number) => (
+    <button className="tile linkish" style={{ color: 'inherit' }} onClick={() => go({ screen: 'ws', id: W, tab })}><div className="n">{n}</div><div className="l">{l}{warn ? <span style={{ color: 'var(--bad)' }}> · {warn} need attention</span> : ''}</div></button>
   );
-}
-
-const ATT_FIX: Record<string, string> = { profile: 'Edit profile', activities: 'Open processing', vendors: 'Open vendors', assessments: 'Open assessments', incidents: 'Open incidents', requests: 'Open requests', aiSystems: 'Open AI systems' };
-
-function AuditReturn() {
-  const { ds, go, session, saveWorkspace, store, logEvent, toast } = useApp();
-  const [pack, setPack] = useState<string | null>(null);
-  const t = useNow(15_000);
-  if (!ds) return null;
-  const w = ds.workspace;
-  const car = carReadiness(ds, t);
-  const tier = classifyTier(w.sector, w.dataSubjects6m);
-  const sections = [...new Set(car.requirements.map((r) => r.section))];
-
-  const attest = async (key: AttestationKey, value: boolean) => {
-    const next: Workspace = { ...w, attestations: { ...(w.attestations ?? {}), [key]: { value, by: session.userName, at: now() } }, updatedAt: now() };
-    await saveWorkspace(next, `${value ? 'Confirmed' : 'Withdrew'}: ${car.requirements.find((r) => r.attestation === key)?.title}`, 'attest');
-  };
-  const generate = async () => {
-    const md = filingPackMarkdown(ds, { preparedBy: session.userName });
-    setPack(md);
-    await logEvent({ action: 'generate-pack', collection: 'workspace', summary: `Generated filing pack at ${car.score}% readiness` });
-  };
-  const download = async () => {
-    if (!pack) return;
-    const name = `${w.name.replace(/[^\w]+/g, '-').replace(/^-|-$/g, '')}-audit-return-${w.cycleYear}.md`;
-    const r = await store.download(name, pack);
-    toast(r === 'saved' ? 'Filing pack downloaded' : r === 'declined' ? 'Download cancelled' : 'Downloads are not available here; copy the text instead');
-  };
-
-  return (
-    <div className="cols">
-      <section className="card col-2">
-        <div className="row"><h2 className="grow">Requirements</h2><span className="mono">{car.score}% · {car.met}/{car.applicable} met</span></div>
-        <Bar pct={car.score} large />
-        {!tier.filesAuditReturn && <p className="notice">At {tier.tier} this client renews registration and does not file an audit return. Keep the records ready for inspection.</p>}
-        {sections.map((s) => (
-          <div key={s} className="stack" style={{ gap: 0 }}>
-            <h3 style={{ marginTop: 8 }}>{s}</h3>
-            {car.requirements.filter((r) => r.section === s).map((r) => (
-              <div className="req" key={r.id}>
-                <div className="grow" style={{ minWidth: 220, flexBasis: 260 }}>
-                  <b>{r.title}</b>
-                  <div className="small muted">{r.detail}</div>
-                  <div className="small mono muted">{r.ref}</div>
-                </div>
-                <div className="row" style={{ gap: 8 }}>
-                  <Pill tone={STATUS_TONE[r.status]}>{STATUS_TEXT[r.status]}</Pill>
-                  {r.attestation && session.canEdit ? (
-                    <label className="check small"><input type="checkbox" checked={r.status === 'met'} onChange={(e) => attest(r.attestation!, e.target.checked)} />Confirmed</label>
-                  ) : r.status !== 'met' && r.status !== 'na' && r.fixIn !== 'attestations' ? (
-                    <button className="btn ghost" onClick={() => go({ screen: 'workspace', id: w.id, tab: r.fixIn as Tab })}>{ATT_FIX[r.fixIn]}</button>
-                  ) : null}
-                </div>
-              </div>
-            ))}
-          </div>
-        ))}
-      </section>
-      <div className="col-1">
-        <section className="card">
-          <h2>Filing pack</h2>
-          <p className="muted">A preparation pack for the DPCO to review and file through the NDPC portal: readiness summary, gaps, registers, assessments, AI systems, incidents and requests.</p>
-          <div className="row"><button className="btn primary" onClick={generate}>Generate filing pack</button>{pack && <button className="btn" onClick={download}>Download (.md)</button>}</div>
-          {pack && <div className="pack" tabIndex={0} aria-label="Filing pack preview">{pack}</div>}
-        </section>
-        <section className="card">
-          <h2>Filing details</h2>
-          <div className="kv">
-            <div><div className="k">Due</div><div className="v">{fmtDate(auditReturnDue(w.cycleYear).toISOString())}</div></div>
-            <div><div className="k">Days left</div><div className="v mono">{daysUntil(auditReturnDue(w.cycleYear), t)}</div></div>
-            <div><div className="k">Filing fee range</div><div className="v">₦100,000 – ₦1,000,000</div></div>
-          </div>
-          <p className="small muted">Late or non-filing: up to 2% of prior-year gross revenue or ₦10m, whichever is greater.</p>
-          <Prov p={{ source: 'GAID 2025; NDPC filing notices', confidence: 'secondary', note: 'Confirm the due date each cycle against the NDPC notice.' }} />
-        </section>
-      </div>
-    </div>
-  );
-}
-
-function ControlMap() {
-  const { ds, go } = useApp();
-  const [sel, setSel] = useState(CONTROL_MAP[1].id);
-  if (!ds) return null;
-  const count = (src: string) => src === 'profile' ? 1 : ((ds as unknown as Record<string, unknown[]>)[src]?.length ?? 0);
-  const row = CONTROL_MAP.find((r) => r.id === sel)!;
-  const hits = FRAMEWORKS.filter((f) => row.refs[f]).length;
   return (
     <>
-      <p className="muted">Collect a record once and see every obligation it answers. Choose a record to trace it.</p>
-      <div className="card flush tablebox">
-        <table style={{ minWidth: 980 }}>
-          <thead><tr><th>Evidence</th><th>Records</th>{FRAMEWORKS.map((f) => <th key={f}>{f}</th>)}</tr></thead>
-          <tbody>
-            {CONTROL_MAP.map((r) => (
-              <tr key={r.id} style={r.id === sel ? { background: 'var(--accent-soft)' } : undefined}>
-                <td><button className="linkish" aria-pressed={r.id === sel} onClick={() => setSel(r.id)}>{r.evidence}</button></td>
-                <td className="mono">{count(r.source) ? count(r.source) : <Pill tone="bad">0</Pill>}</td>
-                {FRAMEWORKS.map((f) => <td key={f} className="mono small" style={{ color: r.refs[f] ? undefined : 'var(--faint)' }}>{r.refs[f] ?? '—'}</td>)}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="jxgrid">
+        {res.map((r) => (
+          <button key={r.code} className="card jxcard linkish" onClick={() => go({ screen: 'ws', id: W, tab: 'compliance', sub: r.code })}>
+            <div className="row"><b className="grow">{PACKS[r.code].name}</b><span className="mono">{r.score}%</span></div>
+            <Bar pct={r.score} />
+            <span className="small muted">{PACKS[r.code].shortLaw} · {r.met} met · {r.partial} partly · {r.missing} missing</span>
+            {r.code === 'NG' && <span className="small"><TierTag tier={ngTierFor(w).tier} /> {TIER_LABEL[ngTierFor(w).tier]}</span>}
+          </button>
+        ))}
       </div>
-      <section className="card">
-        <h2>{row.evidence}</h2>
-        <p>One record answers requirements in {hits} of {FRAMEWORKS.length} frameworks. {row.description}</p>
-        {row.source !== 'profile' && <div><button className="btn" onClick={() => go({ screen: 'workspace', id: ds.workspace.id, tab: row.source as Tab })}>Open the records</button></div>}
-        <Prov p={CONTROL_MAP_PROVENANCE} />
-      </section>
+      <div className="cols">
+        <section className="card col-2">
+          <div className="row"><h2 className="grow">Highest-impact actions</h2><button className="btn ghost" onClick={() => go({ screen: 'ws', id: W, tab: 'actions' })}>Full action plan</button></div>
+          {plan.length === 0 ? <p className="muted">No gaps found across {res.length} jurisdiction{res.length > 1 ? 's' : ''}.</p> : plan.slice(0, 6).map((a) => (
+            <div key={a.key} className="req">
+              <div className="grow" style={{ minWidth: 220 }}><b>{a.title}</b><div className="small muted">{a.details[0].detail}</div></div>
+              <div className="row" style={{ gap: 6 }}><Jx codes={a.jurisdictions} /><Pill tone={a.severity === 'high' ? 'bad' : a.severity === 'medium' ? 'warn' : 'none'}>{a.severity}</Pill></div>
+            </div>
+          ))}
+        </section>
+        <section className="card col-1">
+          <h2>Coming up</h2>
+          {soon.length === 0 ? <p className="muted">Nothing due in the next 60 days.</p> : soon.slice(0, 8).map((d, i) => (
+            <button key={i} className="req linkish" style={{ width: '100%', color: 'inherit', fontWeight: 400 }} onClick={() => go({ screen: 'ws', id: W, tab: FIX_TAB[d.fixIn], open: d.id })}>
+              <div className="grow"><b>{d.label}</b><div className="small muted">{d.detail}</div></div>
+              <Pill tone={d.overdue ? 'bad' : 'warn'}>{d.overdue ? 'Overdue' : fmtDate(d.date)}</Pill>
+            </button>
+          ))}
+        </section>
+      </div>
+      <div className="tiles">
+        {tile(ds.activities.filter((a) => a.status !== 'retired').length, 'Processing activities', 'datamap')}
+        {tile(ds.systems.length, 'Systems', 'datamap')}
+        {tile(ds.vendors.length, 'Vendors', 'vendors', highVendors)}
+        {tile(ds.aiSystems.filter((s) => s.status !== 'retired').length, 'AI systems', 'ai', highAI)}
+        {tile(ds.incidents.filter((i) => i.stage !== 'closed').length, 'Open incidents', 'incidents')}
+        {tile(ds.requests.filter((r) => r.stage !== 'responded' && r.stage !== 'refused').length, 'Open requests', 'requests')}
+      </div>
     </>
+  );
+}
+
+function LawFacts({ code }: { code: JurisdictionCode }) {
+  const p = PACKS[code];
+  const rights = RIGHTS.filter((r) => p.rights.available[r.id]);
+  const missingRights = RIGHTS.filter((r) => !p.rights.available[r.id] && r.id !== 'complaint');
+  return (
+    <section className="card">
+      <h2>How {p.shortLaw} works here</h2>
+      <div className="kv">
+        <div><div className="k">Regulator</div><div className="v">{p.regulator}</div></div>
+        <div><div className="k">Officer</div><div className="v">{p.officer.title}</div></div>
+        <div><div className="k">Breach notice</div><div className="v">{p.breach.window}</div></div>
+        <div><div className="k">Impact assessment</div><div className="v">{p.dpia.name}{p.dpia.binding ? '' : ' (recommended)'}</div></div>
+      </div>
+      <p className="small"><b>{p.sensitive.term[0].toUpperCase() + p.sensitive.term.slice(1)}</b> ({p.sensitive.ref}): {p.sensitive.categories.map(categoryLabel).join(', ')}.</p>
+      <p className="small"><b>Rights:</b> {rights.map((r) => `${r.label}${p.rights.available[r.id]?.days ? ` (${p.rights.available[r.id]!.days} days)` : ''}`).join(', ')}.{missingRights.length ? ` Not provided: ${missingRights.map((r) => r.label.toLowerCase()).join(', ')}.` : ''}{p.rights.defaultDays ? ` Default response period ${p.rights.defaultDays} days.` : ' No fixed response period.'}</p>
+      <p className="small"><b>Transfers:</b> {p.transfers ? `${p.transfers.summary} (${p.transfers.ref})` : 'No specific transfer rule in the law.'}</p>
+      <Prov p={p.rights.prov} />
+    </section>
+  );
+}
+
+function Compliance() {
+  const { ds, route, go, download, session } = useApp();
+  const t = useNow(30_000);
+  if (!ds || route.screen !== 'ws') return null;
+  const w = ds.workspace;
+  const code = (route.sub && w.jurisdictions.includes(route.sub as JurisdictionCode) ? route.sub : w.jurisdictions[0]) as JurisdictionCode;
+  if (!code) return <Empty title="No laws selected">Choose the laws that apply in entity settings.</Empty>;
+  const res = evaluateJurisdiction(code, ds, t);
+  const sections = [...new Set(res.requirements.map((r) => r.section))];
+  const pack = PACKS[code];
+  const isNg = code === 'NG';
+  const exportReport = () => download(`${slug(w.name)}-${isNg ? 'ndpc-audit-return-pack' : slug(pack.shortLaw) + '-report'}.md`, complianceReportMarkdown(ds, code, { preparedBy: session.userName }));
+  return (
+    <>
+      <SubTabs label="Jurisdiction" value={code} onChange={(c) => go({ screen: 'ws', id: w.id, tab: 'compliance', sub: c })} tabs={w.jurisdictions.map((c) => ({ id: c, label: PACKS[c].name }))} />
+      <div className="cols">
+        <section className="card col-2">
+          <div className="row"><div className="grow"><h2>{pack.law}</h2><p className="small muted">{pack.blurb}</p></div><span className="mono">{res.score}%</span></div>
+          <Bar pct={res.score} large />
+          <p className="small muted">{res.met} met · {res.partial} partly met · {res.missing} missing, of {res.applicable} binding requirements. Worked out from this entity’s records.</p>
+          {sections.map((s) => (
+            <div key={s} className="stack" style={{ gap: 0 }}>
+              <h3 style={{ marginTop: 10 }}>{s}</h3>
+              {res.requirements.filter((r) => r.section === s).map((r) => <RequirementRow key={r.key} r={r} onFix={() => go({ screen: 'ws', id: w.id, tab: FIX_TAB[r.fixIn] })} />)}
+            </div>
+          ))}
+        </section>
+        <div className="col-1">
+          {isNg && (() => { const tier = ngTierFor(w); const cyc = ngCycleYear(w); return (
+            <section className="card">
+              <h2>NDPC classification</h2>
+              <div className="row"><TierTag tier={tier.tier} /><b>{TIER_LABEL[tier.tier]}</b></div>
+              <p>{tier.explanation}</p>
+              <p className="small">{tier.filesAuditReturn ? `Annual Compliance Audit Return for ${cyc} due ${fmtDate(auditReturnDue(cyc))}.` : 'Registration renewal only; no audit return at this tier.'}</p>
+              <Prov p={tier.provenance} />
+            </section>
+          ); })()}
+          <section className="card">
+            <h2>{isNg ? 'Audit return pack' : 'Report'}</h2>
+            <p className="small muted">{isNg ? 'Readiness, gaps, record of processing and AI parameters, for the DPCO to review before filing through the NDPC portal.' : `A ${pack.shortLaw} report of requirements, gaps and the record of processing in scope.`}</p>
+            <div><button className="btn primary" onClick={exportReport}>{isNg ? 'Download filing pack (.md)' : 'Download report (.md)'}</button></div>
+          </section>
+          <LawFacts code={code} />
+        </div>
+      </div>
+    </>
+  );
+}
+
+function RequirementRow({ r, onFix }: { r: Requirement; onFix: () => void }) {
+  return (
+    <div className="req">
+      <div className="grow" style={{ minWidth: 220, flexBasis: 280 }}>
+        <b>{r.title}</b>{!r.binding && <span className="small muted"> · recommended</span>}
+        <div className="small muted">{r.detail}</div>
+        <div className="small mono muted">{r.ref}</div>
+        {r.provenance && r.provenance.confidence !== 'primary' && <Prov p={r.provenance} />}
+      </div>
+      <div className="row" style={{ gap: 8 }}>
+        <Status s={r.status} />
+        {(r.status === 'missing' || r.status === 'partial') && <button className="btn ghost" onClick={onFix}>{FIX_LABEL[r.fixIn]}</button>}
+      </div>
+    </div>
+  );
+}
+
+function Actions() {
+  const { ds, go, saveRecord, session } = useApp();
+  const t = useNow(60_000);
+  if (!ds) return null;
+  const plan = actionPlan(ds, t);
+  const tasks = ds.tasks;
+  const multi = plan.filter((a) => a.jurisdictions.length > 1).length;
+  return (
+    <>
+      <p className="muted">Every gap across {ds.workspace.jurisdictions.length} jurisdiction{ds.workspace.jurisdictions.length > 1 ? 's' : ''}, merged where one fix clears several.{multi ? ` ${multi} of ${plan.length} actions satisfy more than one law.` : ''}</p>
+      {plan.length === 0 ? <Empty title="No open actions">Every requirement for the selected laws is met.</Empty> : (
+        <div className="card flush">
+          {plan.map((a) => {
+            const task = tasks.find((x) => x.gapKey === a.key && x.status !== 'done');
+            return (
+              <div key={a.key} className="req" style={{ padding: '14px 18px' }}>
+                <div className="grow" style={{ minWidth: 240, flexBasis: 320 }}>
+                  <div className="row" style={{ gap: 8 }}><Pill tone={a.severity === 'high' ? 'bad' : a.severity === 'medium' ? 'warn' : 'none'}>{a.severity}</Pill><b>{a.title}</b></div>
+                  {a.details.map((d) => <div key={d.code} className="small"><Jx codes={[d.code]} /> <span className="muted">{d.detail}</span></div>)}
+                  <div className="small mono muted">{a.refs.join(' · ')}</div>
+                </div>
+                <div className="stack" style={{ gap: 6, alignItems: 'flex-end' }}>
+                  <button className="btn" onClick={() => go({ screen: 'ws', id: ds.workspace.id, tab: FIX_TAB[a.fixIn] })}>{FIX_LABEL[a.fixIn]}</button>
+                  {task ? <span className="small muted">Task: {task.owner ?? 'unassigned'}{task.due ? `, due ${task.due}` : ''}</span>
+                    : session.canEdit && <button className="btn ghost" onClick={() => saveRecord('tasks', { id: newId(), title: a.title, detail: a.details.map((d) => `${PACKS[d.code].shortLaw}: ${d.detail}`).join('\n'), gapKey: a.key, status: 'open', createdAt: now(), updatedAt: now() }, `Created task: ${a.title}`)}>Make it a task</button>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+      <TaskList />
+    </>
+  );
+}
+
+function TaskList() {
+  const { ds, saveRecord, session } = useApp();
+  if (!ds || !ds.tasks.length) return null;
+  const rows = ds.tasks.slice().sort((a, b) => (a.status === 'done' ? 1 : 0) - (b.status === 'done' ? 1 : 0) || String(a.due ?? '9').localeCompare(String(b.due ?? '9')));
+  return (
+    <section className="card flush tablebox">
+      <div style={{ padding: '14px 18px 4px' }}><h2>Tasks</h2></div>
+      <table style={{ minWidth: 640 }}>
+        <thead><tr><th>Task</th><th>Owner</th><th>Due</th><th>Status</th></tr></thead>
+        <tbody>{rows.map((x) => (
+          <tr key={x.id}>
+            <td>{x.title}</td>
+            <td><input type="text" aria-label={`Owner of ${x.title}`} disabled={!session.canEdit} defaultValue={x.owner ?? ''} onBlur={(e) => e.target.value !== (x.owner ?? '') && saveRecord('tasks', { ...x, owner: e.target.value, updatedAt: now() } as never, `Assigned task: ${x.title}`)} /></td>
+            <td><input type="date" aria-label={`Due date of ${x.title}`} disabled={!session.canEdit} defaultValue={x.due ?? ''} onBlur={(e) => e.target.value !== (x.due ?? '') && saveRecord('tasks', { ...x, due: e.target.value, updatedAt: now() } as never, `Set due date: ${x.title}`)} /></td>
+            <td><select aria-label={`Status of ${x.title}`} disabled={!session.canEdit} value={x.status} onChange={(e) => saveRecord('tasks', { ...x, status: e.target.value, updatedAt: now() } as never, `Task ${e.target.value}: ${x.title}`)}><option value="open">Open</option><option value="in-progress">In progress</option><option value="done">Done</option></select></td>
+          </tr>
+        ))}</tbody>
+      </table>
+    </section>
   );
 }
 
@@ -234,7 +261,7 @@ function ActivityLog() {
     return () => { live = false; };
   }, [store, ds]);
   if (!rows) return <p className="muted">Loading activity…</p>;
-  if (!rows.length) return <div className="empty"><h2>No activity yet</h2><p className="muted">Every change to this client’s records is listed here with who made it and when.</p></div>;
+  if (!rows.length) return <Empty title="No activity yet">Every change to this entity’s records is listed here with who made it and when.</Empty>;
   return (
     <div className="card flush tablebox">
       <table style={{ minWidth: 640 }}>
@@ -245,49 +272,79 @@ function ActivityLog() {
   );
 }
 
-function Profile() {
-  const { ds, saveWorkspace, store, session, go, toast, reload } = useApp();
+function Settings() {
+  const { ds, saveWorkspace, store, session, go, toast, reload, words, workspaces, org } = useApp();
   const w = ds!.workspace;
   const [values, setValues] = useState(() => initialValues(WORKSPACE_FIELDS, w as unknown as Record<string, unknown>));
+  const [jx, setJx] = useState<Workspace['jx']>(() => JSON.parse(JSON.stringify(w.jx ?? {})));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [confirm, setConfirm] = useState(false);
-  const tier = useMemo(() => classifyTier(String(values.sector) as Workspace['sector'], Number(values.dataSubjects6m) || 0), [values.sector, values.dataSubjects6m]);
+  const selected = (values.jurisdictions as JurisdictionCode[]) ?? [];
+  const hidden = JURISDICTION_CODES.filter((c) => !selected.includes(c) && jx[c] && Object.values(jx[c]!).some((v) => v !== undefined && v !== '' && v !== false));
+  const draft = useMemo(() => ({ ...w, ...(values as Partial<Workspace>), jx }) as Workspace, [w, values, jx]);
+  const tier = selected.includes('NG') ? ngTierFor(draft) : null;
+  const setJ = (c: JurisdictionCode, k: string, v: unknown) => setJx((s) => ({ ...s, [c]: { ...(s[c] ?? {}), [k]: v } }));
+
   const save = async () => {
     const r = validateRecord(WORKSPACE_FIELDS, values);
-    setErrors(r.errors);
-    if (!r.ok) return;
-    await saveWorkspace({ ...w, ...(r.value as Partial<Workspace>), updatedAt: now() }, 'Updated client profile');
-    toast('Profile saved');
+    const jErr: Record<string, string> = {};
+    const cleanJx: Workspace['jx'] = { ...jx };
+    for (const c of selected) {
+      const jr = validateRecord(PACKS[c].profileFields, (jx[c] ?? {}) as Record<string, unknown>);
+      Object.entries(jr.errors).forEach(([k, e]) => { jErr[`${c}.${k}`] = e; });
+      cleanJx[c] = { ...(jx[c] ?? {}), ...jr.value };
+    }
+    setErrors({ ...r.errors, ...jErr });
+    if (!r.ok || Object.keys(jErr).length) return;
+    await saveWorkspace({ ...w, ...(r.value as Partial<Workspace>), jx: cleanJx, updatedAt: now() }, 'Updated entity settings');
+    toast('Settings saved');
   };
+
   return (
     <div className="cols">
-      <section className="card col-2">
-        <h2>Client profile</h2>
-        <fieldset disabled={!session.canEdit} style={{ border: 0, padding: 0, margin: 0 }}>
-          <div className="form-grid">
-            {WORKSPACE_FIELDS.map((f) => <div key={f.key} className={f.type === 'multiselect' ? 'wide' : ''}><FieldInput f={f} value={values[f.key]} onChange={(v) => setValues((s) => ({ ...s, [f.key]: v }))} error={errors[f.key]} ds={ds} idPrefix="ws" /></div>)}
-          </div>
-        </fieldset>
-        {session.canEdit && <div className="row"><button className="btn primary" onClick={save}>Save profile</button></div>}
-      </section>
+      <div className="col-2">
+        <section className="card">
+          <h2>{words.Entity}</h2>
+          <FormFields fields={WORKSPACE_FIELDS} values={values} set={(k, v) => setValues((s) => ({ ...s, [k]: v }))} errors={errors} ds={ds} ctx={{}} idPrefix="ws" disabled={!session.canEdit} />
+        </section>
+        {selected.map((c) => (
+          <section key={c} className="card">
+            <div className="row"><h2 className="grow">{PACKS[c].name}</h2><Jx codes={[c]} /></div>
+            <p className="small muted">{PACKS[c].blurb}</p>
+            <fieldset disabled={!session.canEdit} style={{ border: 0, padding: 0, margin: 0 }}>
+              <div className="form-grid">
+                {PACKS[c].profileFields.filter((f) => isVisible(f, (jx[c] ?? {}) as Record<string, unknown>, { workspace: draft })).map((f) => {
+                  const shown = f.key === 'representative' && ((c === 'EU' && PACKS.EU.transfers!.isDomestic(String(values.establishment))) || (c === 'UK' && values.establishment === 'GB')) ? null : f;
+                  return shown && <div key={f.key}><FieldInput f={f} value={(jx[c] ?? {})[f.key] ?? f.default} onChange={(v) => setJ(c, f.key, v)} error={errors[`${c}.${f.key}`]} ds={ds} ctx={{ workspace: draft }} idPrefix={`jx-${c}`} /></div>;
+                })}
+              </div>
+            </fieldset>
+            {c === 'NG' && tier && <p className="small"><TierTag tier={tier.tier} /> {tier.explanation}</p>}
+            {c === 'ZA' && <p className="small muted">The Information Officer is recorded here; the privacy lead above is used as the deputy where different.</p>}
+          </section>
+        ))}
+        {hidden.length > 0 && <p className="small muted">Values kept for laws no longer selected ({hidden.map((c) => PACKS[c].name).join(', ')}). They are not shown or checked unless you select the law again.</p>}
+        {session.canEdit && <div className="row"><button className="btn primary" onClick={save}>Save settings</button></div>}
+      </div>
       <div className="col-1">
         <section className="card">
-          <h2>Tier with these details</h2>
-          <div className="row"><TierTag tier={tier.tier} /><b>{TIER_LABEL[tier.tier]}</b></div>
-          <p>{tier.explanation}</p>
-          <p className="small muted">{fmtNum(Number(values.dataSubjects6m) || 0)} data subjects in six months.</p>
-          <Prov p={tier.provenance} />
+          <h2>Laws switched on</h2>
+          {selected.map((c) => <p key={c} className="small"><Jx codes={[c]} /> {PACKS[c].law}. Regulator: {PACKS[c].regulator}.</p>)}
+          <p className="small muted">Records only offer these jurisdictions. Removing one hides its fields, deadlines and checks everywhere.</p>
         </section>
-        {session.canEdit && (
+        {session.canEdit && (org.mode === 'advisory' || workspaces.length > 1 || session.isAdmin) && (
           <section className="card">
-            <h2>Remove client</h2>
-            <p className="muted">Deletes the client and every record under it. This cannot be undone.</p>
-            {confirm ? (
-              <div className="row"><button className="btn danger" onClick={async () => { await store.deleteWorkspace(w.id); toast('Client removed'); go({ screen: 'portfolio' }); reload(); }}>Delete {w.name}</button><button className="btn" onClick={() => setConfirm(false)}>Keep</button></div>
-            ) : <div><button className="btn danger" onClick={() => setConfirm(true)}>Remove client</button></div>}
+            <h2>Remove {words.entity}</h2>
+            <p className="muted">Deletes {w.name} and every record under it. This cannot be undone.</p>
+            {confirm
+              ? <div className="row"><button className="btn danger" onClick={async () => { await store.deleteWorkspace(w.id); toast(`${words.Entity} removed`); go({ screen: 'home' }); reload(); }}>Delete {w.name}</button><button className="btn" onClick={() => setConfirm(false)}>Keep</button></div>
+              : <div><button className="btn danger" onClick={() => setConfirm(true)}>Remove {words.entity}</button></div>}
           </section>
         )}
+        <p className="small muted">{fmtNum(ds!.activities.length)} activities, {fmtNum(ds!.systems.length)} systems, {fmtNum(ds!.vendors.length)} vendors on record.</p>
       </div>
     </div>
   );
 }
+
+export { overallScore };

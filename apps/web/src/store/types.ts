@@ -1,24 +1,27 @@
-import type { AuditEntry, CollectionName, Dataset, Workspace } from '@tenet/core';
+import type { AuditEntry, CollectionName, Dataset, OrgSettings, Workspace } from '@tenet/core';
 
 export interface Session {
-  /** Display name of the signed-in person, if known. */
   userName: string;
-  /** Organisation (DPCO or company) the person works for. */
-  orgName: string;
   canEdit: boolean;
-  /** Short note shown in the footer about where data is kept. */
+  isAdmin: boolean;
   storageNote: string;
 }
 
 export type AnyRecord = { id: string } & Record<string, unknown>;
 
+export interface TeamMember { id: string; name: string; email: string; role: 'admin' | 'editor' | 'viewer' }
+
 export interface Store {
   kind: 'api' | 'artifact' | 'local';
-  /** Resolve the session, or null when the person must sign in (API mode). */
   session(): Promise<Session | null>;
   signIn?(email: string, password: string): Promise<void>;
-  signUp?(input: { email: string; password: string; name: string; orgName: string }): Promise<void>;
+  signUp?(input: { email: string; password: string; name: string; orgName: string; mode: OrgSettings['mode'] }): Promise<void>;
   signOut?(): Promise<void>;
+  /** Organisation settings; null until onboarding is done. */
+  getOrg(): Promise<OrgSettings | null>;
+  saveOrg(o: OrgSettings): Promise<void>;
+  listTeam?(): Promise<TeamMember[]>;
+  addTeamMember?(m: { name: string; email: string; role: TeamMember['role']; password: string }): Promise<void>;
 
   listWorkspaces(): Promise<Workspace[]>;
   saveWorkspace(w: Workspace): Promise<void>;
@@ -27,16 +30,19 @@ export interface Store {
   saveRecord(workspaceId: string, collection: CollectionName, record: AnyRecord): Promise<void>;
   deleteRecord(workspaceId: string, collection: CollectionName, id: string): Promise<void>;
   listAudit(workspaceId: string): Promise<AuditEntry[]>;
-  /** Called by the UI for stores that do not write their own audit trail. Server-backed stores ignore it. */
+  /** For stores that do not write their own audit trail. Server-backed stores record changes themselves. */
   audit(workspaceId: string, entry: Omit<AuditEntry, 'id' | 'at' | 'actor'>): Promise<void>;
   importDataset(ds: Dataset): Promise<void>;
-  /** Fires whenever data may have changed (own writes, other viewers, polling). */
   onChange(cb: () => void): () => void;
-  /** Offer a generated file to the person. */
-  download(filename: string, text: string): Promise<'saved' | 'declined' | 'unavailable'>;
+  download(filename: string, text: string, mime?: string): Promise<'saved' | 'declined' | 'unavailable'>;
 }
 
 export const now = () => new Date().toISOString();
 export const newId = () => (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
-/** Drop undefined values so documents are plain JSON. */
 export const clean = <T,>(x: T): T => JSON.parse(JSON.stringify(x));
+
+export function browserDownload(filename: string, text: string, mime = 'text/markdown') {
+  const url = URL.createObjectURL(new Blob([text], { type: mime }));
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}

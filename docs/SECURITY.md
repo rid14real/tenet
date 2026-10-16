@@ -2,7 +2,7 @@
 
 ## Tenant isolation
 
-Each DPCO or company is an organisation. Clients, records and audit entries carry `org_id`, and PostgreSQL row-level security policies (forced, so the table owner is also bound) only show rows whose `org_id` matches `app.org_id`. The API sets `app.org_id` inside each request's transaction from the authenticated session. A bug in a query cannot leak another organisation's data, because the database refuses the rows.
+Each organisation is a tenant, whether it is an in-house team running its own programme or an advisory firm running clients' programmes. Entities, records and audit entries carry `org_id`, and PostgreSQL row-level security policies (forced, so the table owner is also bound) only show rows whose `org_id` matches `app.org_id`. The API sets `app.org_id` inside each request's transaction from the authenticated session. A bug in a query cannot leak another organisation's data, because the database refuses the rows.
 
 The app must connect as a role created with `NOSUPERUSER NOBYPASSRLS`. If it is started in production with a role that bypasses row-level security, it refuses to start.
 
@@ -11,7 +11,8 @@ The app must connect as a role created with `NOSUPERUSER NOBYPASSRLS`. If it is 
 - Passwords are hashed with scrypt (N=16384, r=8, p=1) and a per-user salt.
 - Session tokens are 32 random bytes, sent in an httpOnly, SameSite=Lax cookie (marked Secure in production). Only the SHA-256 of a token is stored. Sessions last 7 days.
 - Failed logins are limited to 8 per 15 minutes for each IP and email pair.
-- There are three roles. Admins manage users and can delete clients. Editors can change records. Viewers can only read.
+- There are three roles. Admins manage users, change the organisation's mode and can delete entities. Editors can change records. Viewers can only read.
+- Signing out clears every entity and record from the browser's memory before anyone else signs in.
 
 ## Audit trail
 

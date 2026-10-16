@@ -1,7 +1,7 @@
 {
   "name": "tenet",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Privacy and AI governance platform for Nigeria, Africa and global regimes",
   "workspaces": [
     "packages/*",

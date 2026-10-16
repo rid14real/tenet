@@ -3,14 +3,14 @@ import cookie from '@fastify/cookie';
 import fastifyStatic from '@fastify/static';
 import { existsSync } from 'node:fs';
 import {
-  COLLECTIONS, COLLECTION_META, PASSTHROUGH, WORKSPACE_FIELDS, carReadiness, filingPackMarkdown, validateRecord,
-  type AuditEntry, type CollectionName, type Dataset, type Workspace,
+  COLLECTIONS, COLLECTION_META, JURISDICTION_CODES, PACKS, WORKSPACE_FIELDS, complianceReportMarkdown, compliance, migrateDataset, validateRecord,
+  type AuditEntry, type CollectionName, type Dataset, type JurisdictionCode, type Workspace,
 } from '@tenet/core';
 import { Limiter, hashPassword, hashToken, newToken, verifyPassword } from './auth.js';
 import { withOrg, type Db, type Tx } from './db.js';
 
 export interface Options { db: Db; webDist?: string; secureCookies?: boolean; allowSignup?: () => Promise<boolean>; sessionDays?: number }
-interface Me { userId: string; orgId: string; name: string; email: string; role: 'admin' | 'editor' | 'viewer'; orgName: string }
+interface Me { userId: string; orgId: string; name: string; email: string; role: 'admin' | 'editor' | 'viewer'; orgName: string; orgMode: 'in-house' | 'advisory'; orgCreatedAt: string }
 declare module 'fastify' { interface FastifyRequest { me?: Me } }
 
 const COOKIE = 'tenet_session';
@@ -55,11 +55,11 @@ export async function buildApp(opts: Options): Promise<FastifyInstance> {
     const token = req.cookies[COOKIE];
     if (!token) throw new HttpError(401, 'Sign in to continue.');
     const r = await db.query(
-      `SELECT u.id, u.org_id, u.name, u.email, u.role, o.name AS org_name FROM sessions s JOIN users u ON u.id = s.user_id JOIN orgs o ON o.id = u.org_id
+      `SELECT u.id, u.org_id, u.name, u.email, u.role, o.name AS org_name, o.kind AS org_mode, o.created_at AS org_created FROM sessions s JOIN users u ON u.id = s.user_id JOIN orgs o ON o.id = u.org_id
        WHERE s.token_hash = $1 AND s.expires_at > now()`, [hashToken(token)]);
     if (!r.rowCount) throw new HttpError(401, 'Your session has ended. Sign in again.');
     const u = r.rows[0];
-    req.me = { userId: u.id, orgId: u.org_id, name: u.name, email: u.email, role: u.role, orgName: u.org_name };
+    req.me = { userId: u.id, orgId: u.org_id, name: u.name, email: u.email, role: u.role, orgName: u.org_name, orgMode: u.org_mode, orgCreatedAt: new Date(u.org_created).toISOString() };
   }
   const canWrite = (req: FastifyRequest) => { if (req.me!.role === 'viewer') throw new HttpError(403, 'Your role can view but not change records.'); };
   const isAdmin = (req: FastifyRequest) => { if (req.me!.role !== 'admin') throw new HttpError(403, 'Only an administrator can do this.'); };
@@ -76,18 +76,31 @@ export async function buildApp(opts: Options): Promise<FastifyInstance> {
     const ds: Record<string, unknown> = { workspace: w.rows[0].data };
     for (const c of COLLECTIONS) ds[c] = [];
     for (const r of recs.rows) (ds[r.collection] as unknown[]).push(r.data);
-    return ds as unknown as Dataset;
+    return migrateDataset(ds);
   }
 
   function cleanWorkspace(id: string, body: Record<string, unknown>, existing?: Workspace): Workspace {
-    const v = validateRecord(WORKSPACE_FIELDS, body, ['attestations', 'sample']);
-    if (!v.ok) throw new HttpError(400, 'Some fields need fixing.', v.errors);
+    const v = validateRecord(WORKSPACE_FIELDS, body, ['sample']);
+    const errors = { ...v.errors };
+    const jxIn = (body.jx && typeof body.jx === 'object' ? body.jx : {}) as Record<string, Record<string, unknown>>;
+    const jx: Workspace['jx'] = {};
+    for (const code of JURISDICTION_CODES) {
+      const raw = jxIn[code];
+      if (!raw || typeof raw !== 'object') continue;
+      // Validate selected jurisdictions; keep values of deselected ones unchanged so they come back if re-selected.
+      if ((v.value.jurisdictions as JurisdictionCode[] | undefined)?.includes(code)) {
+        const r = validateRecord(PACKS[code].profileFields, raw);
+        Object.entries(r.errors).forEach(([k, e]) => { errors[`jx.${code}.${k}`] = e; });
+        jx[code] = { ...raw, ...r.value };
+      } else jx[code] = raw;
+    }
+    if (Object.keys(errors).length) throw new HttpError(400, 'Some fields need fixing.', errors);
     const now = new Date().toISOString();
-    return { ...(v.value as unknown as Workspace), id, createdAt: existing?.createdAt ?? now, updatedAt: now };
+    return { ...(v.value as unknown as Workspace), jx, id, createdAt: existing?.createdAt ?? now, updatedAt: now };
   }
 
-  function cleanRecord(col: CollectionName, id: string, body: Record<string, unknown>, existing?: Record<string, unknown>) {
-    const v = validateRecord(COLLECTION_META[col].fields, body, PASSTHROUGH[col] ?? []);
+  function cleanRecord(col: CollectionName, id: string, body: Record<string, unknown>, workspace: Workspace, existing?: Record<string, unknown>) {
+    const v = validateRecord(COLLECTION_META[col].fields, body, COLLECTION_META[col].passthrough ?? [], { workspace });
     if (!v.ok) throw new HttpError(400, 'Some fields need fixing.', v.errors);
     const now = new Date().toISOString();
     return { ...v.value, id, createdAt: (existing?.createdAt as string) ?? now, updatedAt: now };
@@ -114,7 +127,8 @@ export async function buildApp(opts: Options): Promise<FastifyInstance> {
     if (Object.keys(errors).length) throw new HttpError(400, Object.values(errors)[0], errors);
     const exists = await db.query('SELECT 1 FROM users WHERE lower(email) = lower($1)', [b.email]);
     if (exists.rowCount) throw new HttpError(409, 'An account with this email already exists. Sign in instead.');
-    const org = await db.query('INSERT INTO orgs (name) VALUES ($1) RETURNING id', [b.orgName.trim()]);
+    const mode = b.mode === 'advisory' ? 'advisory' : 'in-house';
+    const org = await db.query('INSERT INTO orgs (name, kind) VALUES ($1, $2) RETURNING id', [b.orgName.trim(), mode]);
     const user = await db.query('INSERT INTO users (org_id, email, name, password_hash, role) VALUES ($1,$2,$3,$4,$5) RETURNING id',
       [org.rows[0].id, b.email.trim(), b.name.trim(), await hashPassword(b.password), 'admin']);
     await startSession(reply, user.rows[0].id);
@@ -143,7 +157,16 @@ export async function buildApp(opts: Options): Promise<FastifyInstance> {
   app.get('/api/me', async (req) => {
     await auth(req);
     const m = req.me!;
-    return { user: { id: m.userId, name: m.name, email: m.email, role: m.role }, org: { id: m.orgId, name: m.orgName } };
+    return { user: { id: m.userId, name: m.name, email: m.email, role: m.role }, org: { id: m.orgId, name: m.orgName, mode: m.orgMode, createdAt: m.orgCreatedAt } };
+  });
+
+  app.patch('/api/org', async (req) => {
+    await auth(req); isAdmin(req);
+    const b = (req.body ?? {}) as { name?: string; mode?: string };
+    if (b.mode !== undefined && b.mode !== 'in-house' && b.mode !== 'advisory') throw new HttpError(400, 'Mode must be in-house or advisory.');
+    if (b.name !== undefined && !String(b.name).trim()) throw new HttpError(400, 'Name cannot be empty.');
+    await db.query('UPDATE orgs SET name = coalesce($2, name), kind = coalesce($3, kind) WHERE id = $1', [req.me!.orgId, b.name?.trim() ?? null, b.mode ?? null]);
+    return { ok: true };
   });
 
   // Users in my organisation
@@ -178,8 +201,8 @@ export async function buildApp(opts: Options): Promise<FastifyInstance> {
       const w = cleanWorkspace(id, req.body as Record<string, unknown>, cur.rows[0]?.data);
       await tx.query(`INSERT INTO workspaces (id, org_id, data) VALUES ($1,$2,$3) ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = now()`, [id, req.me!.orgId, w]);
       const before = cur.rows[0]?.data as Workspace | undefined;
-      const attChanged = before && JSON.stringify(before.attestations ?? {}) !== JSON.stringify(w.attestations ?? {});
-      await audit(tx, req.me!, { workspaceId: id, action: !before ? 'create' : attChanged ? 'attest' : 'update', collection: 'workspace', recordId: id, summary: !before ? `Created client ${w.name}` : attChanged ? 'Updated audit-return confirmations' : 'Updated client profile' });
+      const jxChanged = before && JSON.stringify(before.jurisdictions ?? []) !== JSON.stringify(w.jurisdictions);
+      await audit(tx, req.me!, { workspaceId: id, action: before ? 'update' : 'create', collection: 'workspace', recordId: id, summary: !before ? `Created ${w.name}` : jxChanged ? `Changed laws in scope to ${w.jurisdictions.join(', ')}` : 'Updated entity settings' });
       return w;
     });
   });
@@ -190,7 +213,7 @@ export async function buildApp(opts: Options): Promise<FastifyInstance> {
     await withOrg(db, req.me!.orgId, async (tx) => {
       const r = await tx.query('DELETE FROM workspaces WHERE id = $1 RETURNING data->>\'name\' AS name', [id]);
       if (!r.rowCount) throw new HttpError(404, 'Not found.');
-      await audit(tx, req.me!, { action: 'delete', collection: 'workspace', recordId: id, summary: `Removed client ${r.rows[0].name}` });
+      await audit(tx, req.me!, { action: 'delete', collection: 'workspace', recordId: id, summary: `Removed ${r.rows[0].name}` });
     });
     return reply.status(204).send();
   });
@@ -206,10 +229,10 @@ export async function buildApp(opts: Options): Promise<FastifyInstance> {
       for (const col of COLLECTIONS) {
         for (const r of ((ds as unknown as Record<string, Record<string, unknown>[]>)[col] ?? [])) {
           const rid = typeof r.id === 'string' && UUID.test(r.id) ? r.id : crypto.randomUUID();
-          await tx.query('INSERT INTO records (id, workspace_id, org_id, collection, data) VALUES ($1,$2,$3,$4,$5)', [rid, id, req.me!.orgId, col, cleanRecord(col, rid, r)]);
+          await tx.query('INSERT INTO records (id, workspace_id, org_id, collection, data) VALUES ($1,$2,$3,$4,$5)', [rid, id, req.me!.orgId, col, cleanRecord(col, rid, r, w)]);
         }
       }
-      await audit(tx, req.me!, { workspaceId: id, action: 'create', collection: 'workspace', recordId: id, summary: `Imported client ${w.name}` });
+      await audit(tx, req.me!, { workspaceId: id, action: 'create', collection: 'workspace', recordId: id, summary: `Imported ${w.name}` });
     });
     return reply.status(201).send({ id });
   });
@@ -222,22 +245,27 @@ export async function buildApp(opts: Options): Promise<FastifyInstance> {
     return ds;
   });
 
-  app.get('/api/workspaces/:id/readiness', async (req) => {
+  /** Compliance per selected jurisdiction, for integrations and dashboards. */
+  app.get('/api/workspaces/:id/compliance', async (req) => {
     await auth(req);
     const id = param(req, 'id');
     const ds = await withOrg(db, req.me!.orgId, (tx) => loadDataset(tx, id));
     if (!ds) throw new HttpError(404, 'Not found.');
-    return carReadiness(ds);
+    return compliance(ds);
   });
 
-  app.get('/api/workspaces/:id/filing-pack', async (req, reply) => {
+  /** Report for one jurisdiction (for Nigeria, the NDPC audit-return preparation pack). */
+  app.get('/api/workspaces/:id/report/:code', async (req, reply) => {
     await auth(req);
     const id = param(req, 'id');
+    const code = String((req.params as Record<string, string>).code).toUpperCase() as JurisdictionCode;
+    if (!JURISDICTION_CODES.includes(code)) throw new HttpError(404, 'Unknown jurisdiction.');
     const md = await withOrg(db, req.me!.orgId, async (tx) => {
       const ds = await loadDataset(tx, id);
       if (!ds) throw new HttpError(404, 'Not found.');
-      await audit(tx, req.me!, { workspaceId: id, action: 'generate-pack', collection: 'workspace', summary: `Generated filing pack at ${carReadiness(ds).score}% readiness` });
-      return filingPackMarkdown(ds, { preparedBy: `${req.me!.name}, ${req.me!.orgName}` });
+      if (!ds.workspace.jurisdictions.includes(code)) throw new HttpError(400, `${PACKS[code].name} is not selected for this entity.`);
+      await audit(tx, req.me!, { workspaceId: id, action: 'generate-pack', collection: 'workspace', summary: `Generated ${PACKS[code].shortLaw} report` });
+      return complianceReportMarkdown(ds, code, { preparedBy: `${req.me!.name}, ${req.me!.orgName}` });
     });
     return reply.type('text/markdown; charset=utf-8').send(md);
   });
@@ -254,10 +282,10 @@ export async function buildApp(opts: Options): Promise<FastifyInstance> {
     await auth(req);
     const id = param(req, 'id');
     const b = (req.body ?? {}) as { action?: string; summary?: string };
-    if (b.action !== 'generate-pack' || !b.summary) throw new HttpError(400, 'Only filing-pack events can be logged by the client.');
+    if ((b.action !== 'generate-pack' && b.action !== 'export') || !b.summary) throw new HttpError(400, 'Only export events can be logged by the client.');
     await withOrg(db, req.me!.orgId, async (tx) => {
       if (!(await tx.query('SELECT 1 FROM workspaces WHERE id = $1', [id])).rowCount) throw new HttpError(404, 'Not found.');
-      await audit(tx, req.me!, { workspaceId: id, action: 'generate-pack', collection: 'workspace', summary: b.summary! });
+      await audit(tx, req.me!, { workspaceId: id, action: b.action as 'export', collection: 'export', summary: String(b.summary).slice(0, 300) });
     });
     return reply.status(204).send();
   });
@@ -268,9 +296,10 @@ export async function buildApp(opts: Options): Promise<FastifyInstance> {
     const col = (req.params as Record<string, string>).collection;
     if (!isCollection(col)) throw new HttpError(404, 'Not found.');
     return withOrg(db, req.me!.orgId, async (tx) => {
-      if (!(await tx.query('SELECT 1 FROM workspaces WHERE id = $1', [id])).rowCount) throw new HttpError(404, 'Not found.');
+      const ws = await tx.query('SELECT data FROM workspaces WHERE id = $1', [id]);
+      if (!ws.rowCount) throw new HttpError(404, 'Not found.');
       const cur = await tx.query('SELECT data FROM records WHERE workspace_id = $1 AND collection = $2 AND id = $3', [id, col, rid]);
-      const rec = cleanRecord(col, rid, req.body as Record<string, unknown>, cur.rows[0]?.data);
+      const rec = cleanRecord(col, rid, req.body as Record<string, unknown>, migrateDataset({ workspace: ws.rows[0].data }).workspace, cur.rows[0]?.data);
       await tx.query(`INSERT INTO records (id, workspace_id, org_id, collection, data) VALUES ($1,$2,$3,$4,$5)
         ON CONFLICT (workspace_id, collection, id) DO UPDATE SET data = EXCLUDED.data, updated_at = now()`, [rid, id, req.me!.orgId, col, rec]);
       const title = String((rec as Record<string, unknown>)[COLLECTION_META[col].titleKey] ?? '');
