@@ -1,7 +1,7 @@
 {
   "name": "tenet",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Privacy and AI governance platform for Nigeria, Africa and global regimes",
   "workspaces": [
     "packages/*",
@@ -14,7 +14,8 @@
     "dev:web": "npm run dev -w @tenet/web",
     "dev:api": "npm run dev -w @tenet/api",
     "build:artifact": "npm run build -w @tenet/core && npm run build:artifact -w @tenet/web && node scripts/artifact-page.mjs apps/web/dist-artifact/index.html dist-artifact.html",
-    "seed": "npm run seed -w @tenet/api"
+    "seed": "npm run seed -w @tenet/api",
+    "framework": "npm run build -w @tenet/core && node scripts/export-framework.mjs"
   },
   "engines": {
     "node": ">=20"

@@ -59,7 +59,7 @@ export function migrateRecord(col: CollectionName, raw: Any, ws: Workspace): Any
 export function migrateDataset(raw: Any): Dataset {
   const workspace = migrateWorkspace(raw.workspace as Any);
   const out: Any = { workspace };
-  for (const c of ['activities', 'systems', 'vendors', 'assessments', 'incidents', 'requests', 'aiSystems', 'policies', 'trainings', 'tasks'] as CollectionName[]) {
+  for (const c of ['activities', 'systems', 'vendors', 'assessments', 'incidents', 'requests', 'aiSystems', 'policies', 'trainings', 'tasks', 'controls'] as CollectionName[]) {
     out[c] = (arr(raw[c]) as Any[]).map((r) => migrateRecord(c, r, workspace));
   }
   return out as unknown as Dataset;

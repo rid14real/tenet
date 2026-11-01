@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  JURISDICTION_CODES, PACKS, RIGHTS, TIER_LABEL, WORKSPACE_FIELDS, actionPlan, auditReturnDue, categoryLabel, classifyAI, complianceReportMarkdown,
+  JURISDICTION_CODES, PACKS, RIGHTS, TIER_LABEL, WORKSPACE_FIELDS, actionPlan, buildPlan, auditReturnDue, categoryLabel, classifyAI, complianceReportMarkdown,
   compliance, countryName, evaluateJurisdiction, isVisible, ngCycleYear, ngTierFor, overallScore, sectorById, upcoming, validateRecord, vendorRisk,
   type AuditEntry, type FixIn, type JurisdictionCode, type Requirement, type Workspace,
 } from '@tenet/core';
@@ -12,6 +12,7 @@ import { AISystems } from './AISystems';
 import { Assessments } from './Assessments';
 import { DataMap } from './DataMap';
 import { Governance } from './Governance';
+import { Programme } from './Programme';
 import { Incidents } from './Incidents';
 import { Requests } from './Requests';
 import { Vendors } from './Vendors';
@@ -34,6 +35,7 @@ export function WorkspaceScreen() {
       </div>
       {w.sample && <p className="notice">Sample {words.entity}. Its records are examples for trying the platform, not real data.</p>}
       {route.tab === 'overview' && <Overview />}
+      {route.tab === 'programme' && <Programme />}
       {route.tab === 'compliance' && <Compliance />}
       {route.tab === 'actions' && <Actions />}
       {route.tab === 'datamap' && <DataMap />}
@@ -58,6 +60,8 @@ function Overview() {
   const plan = actionPlan(ds, t);
   const soon = upcoming(ds, t, 60);
   const highVendors = ds.vendors.filter((v) => vendorRisk(v, ds, t).tier === 'high').length;
+  const prog = buildPlan(ds, t);
+  const nextUp = prog.items.filter((i) => !['implemented', 'operating', 'not-applicable'].includes(i.status)).sort((a, b) => a.startWeek - b.startWeek).slice(0, 3);
   const highAI = ds.aiSystems.filter((s) => s.status !== 'retired' && ['high', 'unassessed'].includes(classifyAI(s, { sector: w.sector, jurisdictions: w.jurisdictions, vendors: ds.vendors, assessments: ds.assessments }).risk)).length;
   const W = w.id;
   const tile = (n: number, l: string, tab: Tab, warn?: number) => (
@@ -65,6 +69,15 @@ function Overview() {
   );
   return (
     <>
+      <section className="card">
+        <div className="row">
+          <div className="grow"><h2>Programme</h2><p className="small muted">{prog.scoped ? `${prog.items.length} controls on the ${prog.profile.profile} profile, planned to finish ${fmtDate(prog.end)}.` : 'Not scoped yet. Answer a few questions to get a tailored, sequenced plan.'}</p></div>
+          <span className="mono">{prog.progress}% · maturity {prog.maturity.toFixed(1)}</span>
+          <button className="btn" onClick={() => go({ screen: 'ws', id: W, tab: 'programme' })}>{prog.scoped ? 'Open plan' : 'Scope the programme'}</button>
+        </div>
+        <Bar pct={prog.progress} />
+        {prog.scoped && nextUp.length > 0 && <p className="small">Next: {nextUp.map((i, k) => <span key={i.control.id}>{k > 0 && ' · '}<button className="linkish" onClick={() => go({ screen: 'ws', id: W, tab: 'programme', sub: 'plan', open: i.control.id })}>{i.control.id} {i.control.title}</button></span>)}</p>}
+      </section>
       <div className="jxgrid">
         {res.map((r) => (
           <button key={r.code} className="card jxcard linkish" onClick={() => go({ screen: 'ws', id: W, tab: 'compliance', sub: r.code })}>

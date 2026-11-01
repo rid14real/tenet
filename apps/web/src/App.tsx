@@ -12,6 +12,7 @@ import { Jx, Toast } from './ui';
 
 const SECTIONS: { id: Tab; label: string; group?: string }[] = [
   { id: 'overview', label: 'Overview' },
+  { id: 'programme', label: 'Programme' },
   { id: 'compliance', label: 'Compliance' },
   { id: 'actions', label: 'Action plan' },
   { id: 'datamap', label: 'Data map', group: 'Records' },

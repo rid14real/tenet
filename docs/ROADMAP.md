@@ -9,6 +9,19 @@ The order follows the market research. First, win the NDPC audit-return cycle fo
 - Separate modules for the data map (activities, systems, flows), vendor risk, the four assessment types, incidents, requests and governance.
 - A merged action plan, with tasks.
 
+## Done in v0.3
+
+- The Open Privacy Programme Framework, published under CC BY 4.0 in `framework/`.
+- The Programme module: scoping, profile recommendation, a plan driven by law and triggers, scheduling against capacity, maturity scoring, signals from records, and exports.
+
+## Next for the framework
+
+- Practitioner review of every `secondary` and `unverified` reference, starting with the GAID article numbers.
+- Add Annex A control numbers for ISO/IEC 27701:2025 once they have been checked against the standard.
+- Move the NIST categories to Privacy Framework 1.1 when it is final.
+- Programme roll-up across group entities and advisory clients.
+- Templates for each deliverable: charter, RACI, policies and procedures.
+
 ## Before the 2027 audit-return season (now – Feb 2027)
 
 - Verify each pack against primary texts, then move each rule's provenance to "primary". Start with the GAID schedules and tier thresholds, the filing fees, the request-response periods, and the Kenya and Ghana registration rules.

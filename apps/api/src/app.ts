@@ -3,7 +3,7 @@ import cookie from '@fastify/cookie';
 import fastifyStatic from '@fastify/static';
 import { existsSync } from 'node:fs';
 import {
-  COLLECTIONS, COLLECTION_META, JURISDICTION_CODES, PACKS, WORKSPACE_FIELDS, complianceReportMarkdown, compliance, migrateDataset, validateRecord,
+  COLLECTIONS, COLLECTION_META, JURISDICTION_CODES, PACKS, WORKSPACE_FIELDS, complianceReportMarkdown, compliance, controlById, migrateDataset, validateRecord, validateScope,
   type AuditEntry, type CollectionName, type Dataset, type JurisdictionCode, type Workspace,
 } from '@tenet/core';
 import { Limiter, hashPassword, hashToken, newToken, verifyPassword } from './auth.js';
@@ -94,9 +94,16 @@ export async function buildApp(opts: Options): Promise<FastifyInstance> {
         jx[code] = { ...raw, ...r.value };
       } else jx[code] = raw;
     }
+    // Programme scope: validated when sent, otherwise the stored answers are kept.
+    let programme = existing?.programme;
+    if (body.programme !== undefined && body.programme !== null) {
+      const ps = validateScope(body.programme);
+      Object.entries(ps.errors).forEach(([k, e]) => { errors[`programme.${k}`] = e; });
+      programme = ps.value;
+    }
     if (Object.keys(errors).length) throw new HttpError(400, 'Some fields need fixing.', errors);
     const now = new Date().toISOString();
-    return { ...(v.value as unknown as Workspace), jx, id, createdAt: existing?.createdAt ?? now, updatedAt: now };
+    return { ...(v.value as unknown as Workspace), jx, ...(programme ? { programme } : {}), id, createdAt: existing?.createdAt ?? now, updatedAt: now };
   }
 
   function cleanRecord(col: CollectionName, id: string, body: Record<string, unknown>, workspace: Workspace, existing?: Record<string, unknown>) {
@@ -300,6 +307,13 @@ export async function buildApp(opts: Options): Promise<FastifyInstance> {
       if (!ws.rowCount) throw new HttpError(404, 'Not found.');
       const cur = await tx.query('SELECT data FROM records WHERE workspace_id = $1 AND collection = $2 AND id = $3', [id, col, rid]);
       const rec = cleanRecord(col, rid, req.body as Record<string, unknown>, migrateDataset({ workspace: ws.rows[0].data }).workspace, cur.rows[0]?.data);
+      if (col === 'controls') {
+        // One record per framework control, for controls that exist.
+        const cid = String((rec as Record<string, unknown>).controlId ?? '');
+        if (!controlById(cid)) throw new HttpError(400, 'Some fields need fixing.', { controlId: 'Unknown framework control.' });
+        const dup = await tx.query(`SELECT 1 FROM records WHERE workspace_id = $1 AND collection = 'controls' AND id <> $2 AND data->>'controlId' = $3`, [id, rid, cid]);
+        if (dup.rowCount) throw new HttpError(409, 'This control already has a record.');
+      }
       await tx.query(`INSERT INTO records (id, workspace_id, org_id, collection, data) VALUES ($1,$2,$3,$4,$5)
         ON CONFLICT (workspace_id, collection, id) DO UPDATE SET data = EXCLUDED.data, updated_at = now()`, [rid, id, req.me!.orgId, col, rec]);
       const title = String((rec as Record<string, unknown>)[COLLECTION_META[col].titleKey] ?? '');

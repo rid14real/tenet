@@ -141,6 +141,28 @@ d('Tenet API', () => {
     expect(ds.assessments[0].risks.length).toBeGreaterThan(0);
   });
 
+  it('stores programme scope and one record per framework control', async () => {
+    const cur = (await req('a', 'GET', `/api/workspaces/${wsId}/dataset`)).json().workspace;
+    const bad = await req('a', 'PUT', `/api/workspaces/${wsId}`, { ...cur, programme: { volumeBand: 'huge', answers: { ai: 'yes' }, capacityDaysPerWeek: 0, startDate: 'x' } });
+    expect(bad.statusCode).toBe(400);
+    expect(Object.keys(bad.json().errors)).toEqual(expect.arrayContaining(['programme.volumeBand', 'programme.answers.ai', 'programme.capacityDaysPerWeek', 'programme.startDate']));
+    const scope = { volumeBand: '100k-1m', answers: { ai: true, transfers: true }, capacityDaysPerWeek: 4, startDate: '2026-11-02' };
+    expect((await req('a', 'PUT', `/api/workspaces/${wsId}`, { ...cur, programme: scope })).statusCode).toBe(200);
+    // A save without the programme keeps it.
+    expect((await req('a', 'PUT', `/api/workspaces/${wsId}`, { ...cur, programme: undefined })).statusCode).toBe(200);
+    expect((await req('a', 'GET', `/api/workspaces/${wsId}/dataset`)).json().workspace.programme).toMatchObject(scope);
+
+    const r1 = crypto.randomUUID();
+    expect((await req('a', 'PUT', `/api/workspaces/${wsId}/controls/${r1}`, { controlId: 'NOPE-99', status: 'implemented' })).statusCode).toBe(400);
+    expect((await req('a', 'PUT', `/api/workspaces/${wsId}/controls/${r1}`, { controlId: 'GOV-01', status: 'not-applicable' })).json().errors).toHaveProperty('naReason');
+    expect((await req('a', 'PUT', `/api/workspaces/${wsId}/controls/${r1}`, { controlId: 'GOV-01', status: 'implemented', evidence: 'Board minute' })).statusCode).toBe(200);
+    expect((await req('a', 'PUT', `/api/workspaces/${wsId}/controls/${crypto.randomUUID()}`, { controlId: 'GOV-01', status: 'in-progress' })).statusCode).toBe(409);
+    const ds = (await req('a', 'GET', `/api/workspaces/${wsId}/dataset`)).json();
+    expect(ds.controls).toHaveLength(1);
+    expect(ds.controls[0]).toMatchObject({ controlId: 'GOV-01', status: 'implemented' });
+    expect((await req('b', 'GET', `/api/workspaces/${wsId}/dataset`)).statusCode).toBe(404);
+  });
+
   it('rate-limits repeated failed logins', async () => {
     let last = 0;
     for (let i = 0; i < 10; i++) last = (await req(null, 'POST', '/api/auth/login', { email: 'ada@alpha.test', password: 'wrong-password' })).statusCode;

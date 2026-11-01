@@ -25,6 +25,10 @@ export function sampleDataset(now: Date = new Date(), ids: () => string = () => 
         ZA: { ioName: 'Chief Executive Officer' },
         EU: {},
       },
+      programme: {
+        volumeBand: '100k-1m', capacityDaysPerWeek: 3, startDate: day(120), answeredAt: ago(120 * 24),
+        answers: { sensitive: true, ai: true, transfers: true, marketing: true, consent: true, website: true, monitoring: true, children: false, certification: false },
+      },
       sample: true, ...t,
     },
     vendors: [
@@ -82,6 +86,19 @@ export function sampleDataset(now: Date = new Date(), ids: () => string = () => 
     ],
     tasks: [
       { id: ids(), title: 'Get NDPC approval for the Sentra AML transfer clauses', owner: 'T. Bello', due: day(-30), status: 'in-progress', gapKey: 'transfers', ...t },
+    ],
+    controls: [
+      { id: ids(), controlId: 'GOV-01', status: 'operating', owner: 'CEO', implementedOn: day(110), lastReviewed: day(110), evidence: 'Board minute 14/2026 approving the privacy charter', ...t },
+      { id: ids(), controlId: 'GOV-02', status: 'implemented', owner: 'T. Bello', implementedOn: day(105), evidence: 'Appointment letter; NDPC notification receipt', ...t },
+      { id: ids(), controlId: 'REG-01', status: 'implemented', owner: 'Legal', implementedOn: day(100), evidence: 'Applicable law memo (NG, KE, ZA, EU)', ...t },
+      { id: ids(), controlId: 'REG-02', status: 'in-progress', owner: 'T. Bello', notes: 'Kenya certificate expired; renewal filed.', ...t },
+      { id: ids(), controlId: 'INV-01', status: 'implemented', owner: 'CTO', implementedOn: day(80), ...t },
+      { id: ids(), controlId: 'INV-02', status: 'in-progress', owner: 'T. Bello', ...t },
+      { id: ids(), controlId: 'TPR-01', status: 'implemented', owner: 'Procurement', implementedOn: day(70), ...t },
+      { id: ids(), controlId: 'SEC-01', status: 'implemented', owner: 'CTO', implementedOn: day(400), lastReviewed: day(400), evidence: 'Information security policy v2.0', ...t },
+      { id: ids(), controlId: 'INC-01', status: 'implemented', owner: 'T. Bello', implementedOn: day(200), ...t },
+      { id: ids(), controlId: 'PPL-01', status: 'in-progress', owner: 'HR', notes: 'Completion at 72%.', ...t },
+      { id: ids(), controlId: 'AIG-01', status: 'implemented', owner: 'T. Bello', implementedOn: day(30), ...t },
     ],
   };
 }

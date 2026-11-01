@@ -1,5 +1,7 @@
 // Domain model shared by the API and the web app.
 
+import type { ProgrammeScope, ControlRecord } from './programme/types.js';
+
 export type JurisdictionCode = 'NG' | 'ZA' | 'KE' | 'GH' | 'EG' | 'ZW' | 'EU' | 'UK';
 
 /** How far a rule has been checked. Every rule the platform applies carries one. */
@@ -48,6 +50,8 @@ export interface Workspace {
   privacyLeadEmail?: string;
   /** Jurisdiction-specific profile values, keyed by jurisdiction then field. Kept when a jurisdiction is deselected, but ignored. */
   jx: Partial<Record<JurisdictionCode, Record<string, unknown>>>;
+  /** Answers to the programme scoping questions. Absent until the programme is scoped. */
+  programme?: ProgrammeScope;
   sample?: boolean;
   createdAt: string;
   updatedAt: string;
@@ -298,9 +302,9 @@ export interface AuditEntry {
 
 export type CollectionName =
   | 'activities' | 'systems' | 'vendors' | 'assessments' | 'incidents' | 'requests'
-  | 'aiSystems' | 'policies' | 'trainings' | 'tasks';
+  | 'aiSystems' | 'policies' | 'trainings' | 'tasks' | 'controls';
 
-export const COLLECTIONS: CollectionName[] = ['activities', 'systems', 'vendors', 'assessments', 'incidents', 'requests', 'aiSystems', 'policies', 'trainings', 'tasks'];
+export const COLLECTIONS: CollectionName[] = ['activities', 'systems', 'vendors', 'assessments', 'incidents', 'requests', 'aiSystems', 'policies', 'trainings', 'tasks', 'controls'];
 
 /** Everything about one entity the rules need to evaluate. */
 export interface Dataset {
@@ -315,4 +319,8 @@ export interface Dataset {
   policies: Policy[];
   trainings: Training[];
   tasks: Task[];
+  /** Implementation state of framework controls, one record per control. */
+  controls: ControlRecord[];
 }
+
+export type { ProgrammeScope, ControlRecord };

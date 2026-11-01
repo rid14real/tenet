@@ -22,6 +22,8 @@ jobs:
           PGPASSWORD=postgres psql -h localhost -U postgres -d tenet_test -c "CREATE EXTENSION pgcrypto"
       - run: npm ci
       - run: npm run build
+      - name: Published framework files match the catalogue
+        run: node scripts/export-framework.mjs && git diff --exit-code framework
       - run: npm test
         env:
           TEST_DATABASE_URL: postgres://tenet:tenet@localhost:5432/tenet_test

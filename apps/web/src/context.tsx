@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 import type { AuditEntry, CollectionName, Dataset, FieldCtx, OrgSettings, Workspace } from '@tenet/core';
 import type { AnyRecord, Session, Store } from './store/types';
 
-export type Tab = 'overview' | 'compliance' | 'datamap' | 'vendors' | 'assessments' | 'ai' | 'incidents' | 'requests' | 'governance' | 'actions' | 'log' | 'settings';
+export type Tab = 'overview' | 'programme' | 'compliance' | 'datamap' | 'vendors' | 'assessments' | 'ai' | 'incidents' | 'requests' | 'governance' | 'actions' | 'log' | 'settings';
 export type Route =
   | { screen: 'home' } | { screen: 'rules' } | { screen: 'team' }
   | { screen: 'ws'; id: string; tab: Tab; sub?: string; open?: string };

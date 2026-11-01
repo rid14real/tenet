@@ -1,0 +1,5859 @@
+{
+  "id": "oppf",
+  "name": "Open Privacy Programme Framework",
+  "shortName": "OPPF",
+  "version": "1.0.0-draft.1",
+  "status": "draft",
+  "publisher": "FR Data Protection",
+  "licence": "CC BY 4.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "asOf": "2026-11-01",
+  "summary": "A sequenced, scalable implementation framework for data protection programmes. One control catalogue, three scaling profiles, four phases and a maturity model, mapped to eight data protection laws, ISO/IEC 27701 and the NIST Privacy Framework, with ISO/IEC 42001 and the EU AI Act for AI controls.",
+  "profiles": [
+    {
+      "id": "essential",
+      "label": "Essential",
+      "rank": 1,
+      "who": "Small organisations with low-risk processing: the legal floor plus the habits that keep it true."
+    },
+    {
+      "id": "standard",
+      "label": "Standard",
+      "rank": 2,
+      "who": "Mid-sized organisations, or any organisation with sensitive data or a regulator that audits: a managed, evidenced programme."
+    },
+    {
+      "id": "advanced",
+      "label": "Advanced",
+      "rank": 3,
+      "who": "Regulated sectors, very large volumes, groups and certification candidates: an assured, measured programme."
+    }
+  ],
+  "phases": [
+    {
+      "id": 1,
+      "name": "Foundation",
+      "goal": "Mandate, ownership, knowing your data, and the legal must-haves that carry penalties on their own."
+    },
+    {
+      "id": 2,
+      "name": "Operate",
+      "goal": "Repeatable processes for assessments, rights, vendors, transfers, retention and incidents."
+    },
+    {
+      "id": 3,
+      "name": "Assure",
+      "goal": "Monitoring, testing, training in depth and internal audit, so the programme can prove it works."
+    },
+    {
+      "id": 4,
+      "name": "Optimise",
+      "goal": "Measurement, automation, certification and continual improvement."
+    }
+  ],
+  "domains": [
+    {
+      "id": "GOV",
+      "name": "Governance and accountability",
+      "purpose": "Leadership commitment, ownership, policy and the ability to demonstrate compliance."
+    },
+    {
+      "id": "REG",
+      "name": "Regulatory obligations",
+      "purpose": "Knowing which laws apply and meeting registration, filing, representative and regulator duties."
+    },
+    {
+      "id": "INV",
+      "name": "Data inventory and records",
+      "purpose": "Knowing what personal data you hold, where, why and who touches it."
+    },
+    {
+      "id": "LAW",
+      "name": "Lawful and fair processing",
+      "purpose": "A documented legal basis for every purpose, with the extra conditions sensitive and children’s data need."
+    },
+    {
+      "id": "TRN",
+      "name": "Transparency",
+      "purpose": "Telling people what happens to their data, at the right moment and in plain language."
+    },
+    {
+      "id": "RTS",
+      "name": "Individual rights and complaints",
+      "purpose": "Receiving, verifying and answering requests and complaints within each law’s deadline."
+    },
+    {
+      "id": "RSK",
+      "name": "Risk, assessments and privacy by design",
+      "purpose": "Finding privacy risk early and treating it before processing starts."
+    },
+    {
+      "id": "TPR",
+      "name": "Third parties and transfers",
+      "purpose": "Choosing, contracting, overseeing and exiting vendors, and lawful transfers abroad."
+    },
+    {
+      "id": "SEC",
+      "name": "Security of processing",
+      "purpose": "Technical and organisational measures appropriate to the risk."
+    },
+    {
+      "id": "LIF",
+      "name": "Data lifecycle",
+      "purpose": "Collecting only what is needed, keeping it accurate, and disposing of it on time."
+    },
+    {
+      "id": "INC",
+      "name": "Incidents and breaches",
+      "purpose": "Detecting, assessing, notifying and learning from personal data breaches."
+    },
+    {
+      "id": "PPL",
+      "name": "People and culture",
+      "purpose": "Training, competence and the behaviours that make controls work."
+    },
+    {
+      "id": "AIG",
+      "name": "AI and automated decisions",
+      "purpose": "Governing AI systems and automated decisions that use personal data or affect people."
+    },
+    {
+      "id": "ASR",
+      "name": "Assurance and improvement",
+      "purpose": "Monitoring, audit, management review and continual improvement."
+    }
+  ],
+  "triggers": {
+    "processor": "Processes personal data for clients (acts as processor)",
+    "website": "Runs public websites or apps that use cookies or similar technologies",
+    "children": "Processes children’s data",
+    "sensitive": "Processes sensitive or special category data",
+    "ai": "Uses AI or makes automated decisions about people",
+    "transfers": "Transfers personal data across borders, including to cloud services abroad",
+    "marketing": "Sends direct marketing",
+    "monitoring": "Monitors people (CCTV, employee monitoring, location or biometric tracking)",
+    "representative": "Needs a local representative (subject to GDPR or UK GDPR without an establishment there)",
+    "certification": "Aims to certify the programme (ISO/IEC 27701)",
+    "consent": "Relies on consent for some processing"
+  },
+  "owners": {
+    "board": "Board or executive",
+    "privacy-lead": "Privacy lead (DPO)",
+    "legal": "Legal",
+    "security": "Information security",
+    "it": "IT",
+    "hr": "HR",
+    "procurement": "Procurement",
+    "product": "Product and engineering",
+    "marketing": "Marketing",
+    "business-owners": "Business process owners",
+    "customer-service": "Customer service",
+    "internal-audit": "Internal audit",
+    "data-science": "Data science"
+  },
+  "effortDays": {
+    "S": 2,
+    "M": 6,
+    "L": 15
+  },
+  "standards": {
+    "ISO27701": {
+      "name": "ISO/IEC 27701",
+      "version": "2025",
+      "note": "Second edition, October 2025. Standalone privacy information management system; clauses 4–10 plus Annex A (A.1 controller, A.2 processor, A.3 shared controls). Clause numbers follow the harmonised structure; Annex A control numbers are not reproduced here."
+    },
+    "NISTPF": {
+      "name": "NIST Privacy Framework",
+      "version": "1.0",
+      "note": "Version 1.0 (January 2020) is the only final version. Version 1.1 was an initial public draft in April 2025. Categories cited are from 1.0."
+    },
+    "ISO42001": {
+      "name": "ISO/IEC 42001",
+      "version": "2023",
+      "note": "AI management system. Cited by clause or Annex A topic."
+    },
+    "EUAIA": {
+      "name": "EU AI Act",
+      "version": "Regulation (EU) 2024/1689",
+      "note": "Cited for organisations placing or using AI systems in the EU market."
+    }
+  },
+  "jurisdictions": {
+    "NG": {
+      "name": "Nigeria",
+      "law": "Nigeria Data Protection Act 2023 and General Application and Implementation Directive 2025",
+      "regulator": "Nigeria Data Protection Commission"
+    },
+    "ZA": {
+      "name": "South Africa",
+      "law": "Protection of Personal Information Act 2013 (POPIA) and PAIA",
+      "regulator": "Information Regulator"
+    },
+    "KE": {
+      "name": "Kenya",
+      "law": "Data Protection Act 2019 and Regulations 2021",
+      "regulator": "Office of the Data Protection Commissioner"
+    },
+    "GH": {
+      "name": "Ghana",
+      "law": "Data Protection Act 2012 (Act 843)",
+      "regulator": "Data Protection Commission"
+    },
+    "EG": {
+      "name": "Egypt",
+      "law": "Personal Data Protection Law 151 of 2020 and Executive Regulations",
+      "regulator": "Personal Data Protection Center"
+    },
+    "ZW": {
+      "name": "Zimbabwe",
+      "law": "Cyber and Data Protection Act 2021",
+      "regulator": "Postal and Telecommunications Regulatory Authority"
+    },
+    "EU": {
+      "name": "European Union",
+      "law": "General Data Protection Regulation (GDPR)",
+      "regulator": "Lead supervisory authority"
+    },
+    "UK": {
+      "name": "United Kingdom",
+      "law": "UK GDPR and Data Protection Act 2018",
+      "regulator": "Information Commissioner's Office"
+    }
+  },
+  "controls": [
+    {
+      "id": "GOV-01",
+      "domain": "GOV",
+      "title": "Executive mandate and programme charter",
+      "objective": "The board or executive has approved the programme’s scope, objectives, authority and reporting line, and the charter is reviewed each year.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [],
+      "owner": "board",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "Brief the executive on the laws in scope, the penalties and the current exposure.",
+        "Agree scope: entities, jurisdictions, business units and systems.",
+        "Approve a one-page charter: objectives, authority, reporting line, budget owner.",
+        "Name an executive sponsor accountable for the programme."
+      ],
+      "deliverables": [
+        "Programme charter",
+        "Board or executive minute approving it"
+      ],
+      "evidence": [
+        "Signed or minuted charter",
+        "Name of the executive sponsor"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.24(3)",
+            "kind": "supports",
+            "conf": "secondary",
+            "note": "Duty of care and accountability."
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.8",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Arts. 5(2), 24",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 5(2), 24",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "5.1 Leadership and commitment",
+          "4.3 Scope of the PIMS"
+        ],
+        "NISTPF": [
+          "GV.PO-P"
+        ]
+      },
+      "notes": "Keep it short. A charter that runs to ten pages is rarely read again; one page signed by the CEO changes behaviour."
+    },
+    {
+      "id": "GOV-02",
+      "domain": "GOV",
+      "title": "Privacy lead appointed with independence and resources",
+      "objective": "A competent person is formally appointed as DPO, Information Officer or privacy lead, reports to senior management, is free from conflicts and is registered or notified where the law requires.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "GOV-01"
+      ],
+      "owner": "board",
+      "effort": "S",
+      "recurrence": "annual",
+      "module": "settings",
+      "steps": [
+        "Decide whether the law makes the appointment mandatory for each entity.",
+        "Appoint in writing, with a role description that covers the statutory tasks.",
+        "Check for conflicts of interest (for example the head of IT or marketing acting as DPO).",
+        "Publish the contact details and notify or register them with each regulator that requires it."
+      ],
+      "deliverables": [
+        "Appointment letter",
+        "Role description",
+        "Regulator notification or registration"
+      ],
+      "evidence": [
+        "Appointment letter",
+        "Published contact details",
+        "Regulator acknowledgement where applicable"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.32",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Data controllers and processors of major importance."
+          },
+          {
+            "ref": "GAID 2025 (DPO designation, credentials and reporting)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA ss.55–56",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "The head of a private body is the Information Officer by default."
+          },
+          {
+            "ref": "Information Officer registration with the Information Regulator",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.24",
+            "kind": "supports",
+            "conf": "primary",
+            "note": "Appointment is optional in the Act but expected by the ODPC for larger controllers."
+          }
+        ],
+        "GH": [
+          {
+            "ref": "Act 843 s.58",
+            "kind": "supports",
+            "conf": "secondary",
+            "note": "Data Protection Supervisor. The pending Data Protection Bill 2025 would replace this with a DPO."
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020 (DPO appointment and registration with the PDPC)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZW": [
+          {
+            "ref": "CDPA 2021 s.20; SI 155 of 2024 (DPO notified to POTRAZ within 90 days)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Arts. 37–39",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Where Art. 37(1) applies; otherwise good practice."
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 37–39",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Where Art. 37(1) applies."
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "5.3 Roles, responsibilities and authorities",
+          "7.1 Resources"
+        ],
+        "NISTPF": [
+          "GV.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "GOV-03",
+      "domain": "GOV",
+      "title": "Roles, responsibilities and privacy champions",
+      "objective": "Every function that touches personal data knows what it owns. A RACI covers the programme and each department has a named champion.",
+      "phase": 1,
+      "profile": "standard",
+      "dependsOn": [
+        "GOV-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "List the programme activities in this framework that apply to you.",
+        "Assign responsible, accountable, consulted and informed roles for each.",
+        "Nominate a champion in each department that processes personal data.",
+        "Write the responsibilities into job descriptions where they are material."
+      ],
+      "deliverables": [
+        "Privacy RACI",
+        "Champion network list"
+      ],
+      "evidence": [
+        "Approved RACI",
+        "Champion list with dates"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 24",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 24",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.56",
+            "kind": "supports",
+            "conf": "primary",
+            "note": "Deputy Information Officers."
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "5.3 Roles, responsibilities and authorities"
+        ],
+        "NISTPF": [
+          "GV.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "GOV-04",
+      "domain": "GOV",
+      "title": "Data protection policy",
+      "objective": "A board-approved policy sets the organisation’s data protection commitments and points to the procedures that implement them.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "GOV-01"
+      ],
+      "owner": "privacy-lead",
+      "effort": "M",
+      "recurrence": "annual",
+      "module": "governance",
+      "steps": [
+        "Draft the policy around the principles and the laws in scope; keep procedures separate.",
+        "Cover roles, lawful processing, rights, security, vendors, transfers, retention, breaches and training.",
+        "Approve at executive level and publish internally.",
+        "Set an annual review date."
+      ],
+      "deliverables": [
+        "Data protection policy"
+      ],
+      "evidence": [
+        "Approved policy with version and date",
+        "Proof of staff communication"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "GAID 2025 (data protection policy, reviewed in the Compliance Audit Return)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "ODPC guidance note on data protection policies",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.8",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 24(2)",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Where proportionate to the processing."
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 24(2)",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Where proportionate."
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "5.2 Privacy policy"
+        ],
+        "NISTPF": [
+          "GV.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "GOV-05",
+      "domain": "GOV",
+      "title": "Management reporting and oversight",
+      "objective": "Management receives regular reports on privacy risk, incidents, requests and programme progress, and acts on them.",
+      "phase": 2,
+      "profile": "essential",
+      "dependsOn": [
+        "GOV-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "semi-annual",
+      "steps": [
+        "Agree the reporting format and the forum (board, risk committee or executive meeting).",
+        "Report at least twice a year: programme status, open risks, incidents, requests, regulator contact.",
+        "Record decisions and track the actions they create."
+      ],
+      "deliverables": [
+        "Privacy report to management",
+        "Minutes with decisions"
+      ],
+      "evidence": [
+        "Last two reports",
+        "Minutes showing discussion"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "GAID 2025 (semi-annual DPO report)",
+            "kind": "requires",
+            "conf": "secondary",
+            "note": "Forms part of the record verified at the annual audit."
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 38(3)",
+            "kind": "supports",
+            "conf": "primary",
+            "note": "DPO reports to the highest management level."
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 38(3)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "9.3 Management review (inputs)",
+          "5.1 Leadership and commitment"
+        ],
+        "NISTPF": [
+          "GV.MT-P"
+        ]
+      }
+    },
+    {
+      "id": "GOV-06",
+      "domain": "GOV",
+      "title": "Programme resourcing and budget",
+      "objective": "The programme has the people, tools and budget its plan needs, agreed each year against the risk profile.",
+      "phase": 1,
+      "profile": "standard",
+      "dependsOn": [
+        "GOV-01"
+      ],
+      "owner": "board",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "Estimate effort from the tailored plan.",
+        "Decide what is done in-house and what is bought (DPO service, DPCO, tooling, training).",
+        "Approve the budget and record it."
+      ],
+      "deliverables": [
+        "Resource and budget plan"
+      ],
+      "evidence": [
+        "Approved budget line"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 38(2)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 38(2)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "NG": [
+          {
+            "ref": "GAID 2025 (DPO resources)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "7.1 Resources"
+        ],
+        "NISTPF": [
+          "GV.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "GOV-07",
+      "domain": "GOV",
+      "title": "Accountability evidence index",
+      "objective": "For every control in the plan, you can produce the evidence within a day.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "GOV-04"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "continuous",
+      "steps": [
+        "Decide where evidence lives and how it is versioned.",
+        "Link each implemented control to its evidence.",
+        "Check the index before each audit or filing."
+      ],
+      "deliverables": [
+        "Evidence index (this plan, with evidence links)"
+      ],
+      "evidence": [
+        "Index with current links"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 5(2)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 5(2)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.8",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "NG": [
+          {
+            "ref": "NDPA s.24(3)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "7.5 Documented information"
+        ],
+        "NISTPF": [
+          "GV.PO-P"
+        ]
+      },
+      "notes": "Tenet links records to controls automatically where it can. The index is this plan."
+    },
+    {
+      "id": "GOV-08",
+      "domain": "GOV",
+      "title": "Privacy objectives and key indicators",
+      "objective": "The programme has measurable objectives and a small set of indicators reviewed by management.",
+      "phase": 3,
+      "profile": "standard",
+      "dependsOn": [
+        "GOV-05"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "Set three to five objectives for the year.",
+        "Choose indicators: request timeliness, DPIA coverage, vendor DPA coverage, training completion, incident notification timeliness.",
+        "Report them in the management report."
+      ],
+      "deliverables": [
+        "Objectives and indicators"
+      ],
+      "evidence": [
+        "Indicator report over at least two periods"
+      ],
+      "laws": {},
+      "standards": {
+        "ISO27701": [
+          "6.2 Privacy objectives and planning to achieve them",
+          "9.1 Monitoring, measurement, analysis and evaluation"
+        ],
+        "NISTPF": [
+          "GV.MT-P"
+        ]
+      }
+    },
+    {
+      "id": "REG-01",
+      "domain": "REG",
+      "title": "Applicable law and role analysis",
+      "objective": "For each entity you know which laws apply, whether you act as controller, processor or both, and which size or sector tiers you fall into.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [],
+      "owner": "legal",
+      "effort": "S",
+      "recurrence": "annual",
+      "module": "settings",
+      "steps": [
+        "List where each entity is established and where its data subjects are.",
+        "Apply each law’s territorial test, including targeting tests for foreign entities.",
+        "Decide controller or processor role per main activity.",
+        "Work out size and sector tiers (for example the NDPA major-importance tiers)."
+      ],
+      "deliverables": [
+        "Applicable law register"
+      ],
+      "evidence": [
+        "Register with reasons for each conclusion"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.2; GAID 2025 Art. 8(2) (operating in Nigeria)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.3",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.4",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 3",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 3",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "4.1 Understanding the organisation and its context",
+          "4.2 Needs and expectations of interested parties"
+        ],
+        "NISTPF": [
+          "ID.BE-P",
+          "GV.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "REG-02",
+      "domain": "REG",
+      "title": "Regulator registration, licences and fees",
+      "objective": "Every entity that must register, hold a licence or pay a fee has done so, and renewals are diarised.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "REG-01"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "annual",
+      "module": "settings",
+      "steps": [
+        "Check each law’s registration test and exemptions.",
+        "File registrations or licence applications with the required details.",
+        "Record numbers, expiry dates and renewal rules.",
+        "Set reminders well before expiry."
+      ],
+      "deliverables": [
+        "Registration and licence register"
+      ],
+      "evidence": [
+        "Certificates, receipts and renewal dates"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.44; GAID 2025 (registration of data controllers and processors of major importance)",
+            "kind": "requires",
+            "conf": "secondary",
+            "note": "Threshold and tier rules taken from practitioner summaries."
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.55; Information Officer registration",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.18; Data Protection (Registration of Data Controllers and Data Processors) Regulations 2021",
+            "kind": "requires",
+            "conf": "secondary",
+            "note": "Certificates valid for 24 months."
+          }
+        ],
+        "GH": [
+          {
+            "ref": "Act 843 (registration with the Data Protection Commission, renewable every two years)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020 and Executive Regulations 2025 (licences and permits from the PDPC)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZW": [
+          {
+            "ref": "CDPA 2021; SI 155 of 2024 (data controller licence from POTRAZ)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "Data Protection (Charges and Information) Regulations 2018",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Annual data protection fee unless exempt."
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "GV.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "REG-03",
+      "domain": "REG",
+      "title": "Statutory filings and returns calendar",
+      "objective": "Every recurring filing (audit returns, renewals, annual reports) is in one calendar with owners and lead times, and none is missed.",
+      "phase": 2,
+      "profile": "essential",
+      "dependsOn": [
+        "REG-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "List each filing, its trigger, deadline and who files it.",
+        "Work back from each deadline to the evidence needed.",
+        "Engage any licensed third party (such as a DPCO) early.",
+        "Record the filing and the regulator’s acknowledgement."
+      ],
+      "deliverables": [
+        "Filings calendar",
+        "Filed returns"
+      ],
+      "evidence": [
+        "Acknowledgements of each filing"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.44; GAID 2025 (Compliance Audit Return through a licensed DPCO by 31 March)",
+            "kind": "requires",
+            "conf": "secondary",
+            "note": "Fees apply from the 2026 cycle; late filing attracts a penalty. The 2025 return deadline was extended to 30 May 2026."
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Registration renewal every 24 months",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "GH": [
+          {
+            "ref": "Registration renewal every two years",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "Annual data protection fee",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "GV.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "REG-04",
+      "domain": "REG",
+      "title": "Local representative",
+      "objective": "Where a law requires a representative because you are not established there, one is appointed in writing and named in your notices.",
+      "phase": 1,
+      "profile": "essential",
+      "triggers": [
+        "representative"
+      ],
+      "onlyFor": [
+        "EU",
+        "UK"
+      ],
+      "dependsOn": [
+        "REG-01"
+      ],
+      "owner": "legal",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "Confirm the representative test applies and no exemption fits.",
+        "Appoint a representative by written mandate.",
+        "Name the representative in privacy notices and the record of processing."
+      ],
+      "deliverables": [
+        "Representative mandate"
+      ],
+      "evidence": [
+        "Signed mandate",
+        "Notice naming the representative"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 27",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 27",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {}
+    },
+    {
+      "id": "REG-05",
+      "domain": "REG",
+      "title": "Legal and regulatory change watch",
+      "objective": "New laws, regulations, guidance and enforcement decisions are tracked, assessed for impact and turned into plan changes.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "REG-01"
+      ],
+      "owner": "legal",
+      "effort": "S",
+      "recurrence": "continuous",
+      "steps": [
+        "Choose sources for each law in scope (regulator sites, gazettes, trusted alerts).",
+        "Log each change with an impact rating.",
+        "Turn material changes into tasks in this plan."
+      ],
+      "deliverables": [
+        "Regulatory change log"
+      ],
+      "evidence": [
+        "Change log with impact decisions"
+      ],
+      "laws": {},
+      "standards": {
+        "ISO27701": [
+          "4.1 Understanding the organisation and its context",
+          "6.3 Planning of changes"
+        ],
+        "NISTPF": [
+          "GV.PO-P"
+        ]
+      },
+      "notes": "Live items as at November 2026: the EU Digital Omnibus (Council position agreed, not law); Ghana’s Data Protection Bill 2025 (pending); Kenya’s Data Protection (Amendment) Bill (proposed); the NDPC’s DPO continuing professional development framework (June 2026)."
+    },
+    {
+      "id": "REG-06",
+      "domain": "REG",
+      "title": "Regulator engagement and investigations",
+      "objective": "Regulator letters, audits and investigations are handled by a defined process, with deadlines met and privilege considered.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "GOV-02"
+      ],
+      "owner": "legal",
+      "effort": "S",
+      "recurrence": "per-event",
+      "steps": [
+        "Name who receives and who answers regulator correspondence.",
+        "Log each contact and its deadline.",
+        "Prepare an evidence pack from the accountability index.",
+        "Review the response with legal before sending."
+      ],
+      "deliverables": [
+        "Regulator engagement procedure",
+        "Contact log"
+      ],
+      "evidence": [
+        "Log of regulator contact and responses"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA ss.46–48 (complaints, investigation, compliance orders)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 31",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 31",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "GV.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "REG-07",
+      "domain": "REG",
+      "title": "Prior authorisation and prior consultation",
+      "objective": "Processing that needs the regulator’s prior authorisation or consultation is identified before it starts and does not begin without it.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "RSK-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "per-event",
+      "module": "assessments",
+      "steps": [
+        "Build the authorisation and consultation tests into DPIA screening.",
+        "Prepare submissions with the DPIA attached.",
+        "Hold the launch until the regulator responds or the statutory period ends."
+      ],
+      "deliverables": [
+        "Submissions and regulator responses"
+      ],
+      "evidence": [
+        "Submission records"
+      ],
+      "laws": {
+        "ZA": [
+          {
+            "ref": "POPIA ss.57–58",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Prior authorisation for listed processing such as unique identifiers linked across purposes and criminal or credit information."
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.31 (DPIA submission to the Data Commissioner)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020 (permits for sensitive data and transfers)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 36",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 36",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "8.2 Privacy risk assessment"
+        ]
+      }
+    },
+    {
+      "id": "INV-01",
+      "domain": "INV",
+      "title": "System and data asset inventory",
+      "objective": "Every system, SaaS tool, file store and paper record that holds personal data is listed with its owner, location and hosting country.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "GOV-02"
+      ],
+      "owner": "it",
+      "effort": "M",
+      "recurrence": "semi-annual",
+      "module": "datamap",
+      "steps": [
+        "Start from finance (software spend), IT asset lists and SSO logs.",
+        "Interview each department about what it uses, including spreadsheets and paper.",
+        "Record owner, hosting country, vendor and key security measures."
+      ],
+      "deliverables": [
+        "System inventory"
+      ],
+      "evidence": [
+        "Inventory with owners and hosting locations"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 30",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 30",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A: inventory of information and assets"
+        ],
+        "NISTPF": [
+          "ID.IM-P"
+        ]
+      }
+    },
+    {
+      "id": "INV-02",
+      "domain": "INV",
+      "title": "Record of processing activities",
+      "objective": "Each processing activity is recorded with its purpose, lawful basis, data categories, data subjects, systems, recipients, transfers and retention, and the record is kept current.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "INV-01",
+        "REG-01"
+      ],
+      "owner": "business-owners",
+      "effort": "L",
+      "recurrence": "semi-annual",
+      "module": "datamap",
+      "steps": [
+        "Run short workshops with each department, starting with HR, customers and marketing.",
+        "Record each activity against the inventory of systems.",
+        "Have each activity owner confirm their entries.",
+        "Review twice a year and whenever a DPIA or new vendor touches the activity."
+      ],
+      "deliverables": [
+        "Record of processing activities"
+      ],
+      "evidence": [
+        "Record with owner confirmation dates"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "GAID 2025 (record of processing activities, verified at audit)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.17; PAIA s.51",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Documentation of processing operations."
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Data Protection (General) Regulations 2021 (records of processing)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 30(1)",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Exemption for fewer than 250 employees is narrow."
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 30(1)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A: records related to processing PII"
+        ],
+        "NISTPF": [
+          "ID.IM-P"
+        ]
+      },
+      "notes": "The EU Digital Omnibus proposes lighter record-keeping for smaller organisations; it is not law. Keep the record regardless: the other laws in scope and the annual audit still rely on it."
+    },
+    {
+      "id": "INV-03",
+      "domain": "INV",
+      "title": "Records of processing carried out for clients",
+      "objective": "Where you act as processor, you keep a record of the processing you carry out for each client, with sub-processors and transfers.",
+      "phase": 1,
+      "profile": "essential",
+      "triggers": [
+        "processor"
+      ],
+      "dependsOn": [
+        "INV-01"
+      ],
+      "owner": "privacy-lead",
+      "effort": "M",
+      "recurrence": "semi-annual",
+      "module": "datamap",
+      "steps": [
+        "List clients for whom you process personal data and the services involved.",
+        "Record categories of processing, sub-processors, transfers and security measures per client.",
+        "Keep it aligned with the DPAs you have signed."
+      ],
+      "deliverables": [
+        "Processor record"
+      ],
+      "evidence": [
+        "Processor record"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 30(2)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 30(2)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "NG": [
+          {
+            "ref": "NDPA s.29",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.2: records related to processing PII (processor)"
+        ],
+        "NISTPF": [
+          "ID.IM-P"
+        ]
+      }
+    },
+    {
+      "id": "INV-04",
+      "domain": "INV",
+      "title": "Data flow and transfer map",
+      "objective": "You can show how personal data moves between systems, vendors and countries for each main activity.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "INV-02"
+      ],
+      "owner": "it",
+      "effort": "M",
+      "recurrence": "annual",
+      "module": "datamap",
+      "steps": [
+        "Link activities to systems and vendors.",
+        "Record hosting and access countries.",
+        "Mark flows that cross borders and the basis relied on."
+      ],
+      "deliverables": [
+        "Data flow map"
+      ],
+      "evidence": [
+        "Current flow map"
+      ],
+      "laws": {},
+      "standards": {
+        "NISTPF": [
+          "ID.IM-P",
+          "ID.DE-P"
+        ]
+      }
+    },
+    {
+      "id": "INV-05",
+      "domain": "INV",
+      "title": "Data classification scheme",
+      "objective": "Personal data is classified by sensitivity so that handling rules, access and security follow the class.",
+      "phase": 1,
+      "profile": "standard",
+      "dependsOn": [
+        "INV-01"
+      ],
+      "owner": "security",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "Define three or four classes, with sensitive data under each law in scope at the top.",
+        "Set handling rules for each class.",
+        "Label systems and activities."
+      ],
+      "deliverables": [
+        "Classification scheme and handling rules"
+      ],
+      "evidence": [
+        "Scheme",
+        "Labelled inventory"
+      ],
+      "laws": {},
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: classification of information"
+        ],
+        "NISTPF": [
+          "ID.IM-P"
+        ]
+      }
+    },
+    {
+      "id": "INV-06",
+      "domain": "INV",
+      "title": "Automated discovery of personal data",
+      "objective": "Structured and unstructured stores are scanned for personal data so that the inventory reflects reality, including shadow copies.",
+      "phase": 4,
+      "profile": "advanced",
+      "dependsOn": [
+        "INV-02",
+        "INV-05"
+      ],
+      "owner": "security",
+      "effort": "L",
+      "recurrence": "quarterly",
+      "steps": [
+        "Select discovery tooling that runs inside your environment and returns metadata only.",
+        "Scan the highest-risk stores first.",
+        "Reconcile findings against the inventory and record of processing."
+      ],
+      "deliverables": [
+        "Discovery reports",
+        "Reconciliation log"
+      ],
+      "evidence": [
+        "Latest scan and reconciliation"
+      ],
+      "laws": {},
+      "standards": {
+        "NISTPF": [
+          "ID.IM-P"
+        ]
+      }
+    },
+    {
+      "id": "LAW-01",
+      "domain": "LAW",
+      "title": "Lawful basis documented for each purpose",
+      "objective": "Every processing purpose has a lawful basis chosen before processing starts, justified in writing and valid under each law in scope.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "INV-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "M",
+      "recurrence": "per-event",
+      "module": "datamap",
+      "steps": [
+        "For each activity, choose the basis and record why it fits.",
+        "Check the basis exists under every law in scope; some laws lack legitimate interests or public task.",
+        "Avoid consent where there is an imbalance of power, such as employment."
+      ],
+      "deliverables": [
+        "Lawful basis per activity in the record"
+      ],
+      "evidence": [
+        "Record entries with justification"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.25",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.11",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.30",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "GH": [
+          {
+            "ref": "Act 843 s.20",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020 Art. 6",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZW": [
+          {
+            "ref": "CDPA 2021 s.9",
+            "kind": "requires",
+            "conf": "unverified"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 6(1)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 6(1)",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Recognised legitimate interests (Annex 1) available from 5 February 2026 under the Data (Use and Access) Act 2025."
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: identify lawful basis"
+        ],
+        "NISTPF": [
+          "CT.PO-P",
+          "GV.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "LAW-02",
+      "domain": "LAW",
+      "title": "Legitimate interests assessments",
+      "objective": "Each reliance on legitimate interests is supported by a purpose, necessity and balancing test that is recorded and reviewed.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "LAW-01"
+      ],
+      "owner": "privacy-lead",
+      "effort": "M",
+      "recurrence": "per-event",
+      "module": "assessments",
+      "steps": [
+        "List activities relying on legitimate interests.",
+        "Complete the three-part test for each.",
+        "Record any safeguards, including an easy objection route."
+      ],
+      "deliverables": [
+        "Legitimate interests assessments"
+      ],
+      "evidence": [
+        "Signed assessments"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.25(1)(b)(v); GAID 2025 (legitimate interest assessments reviewed at audit)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 6(1)(f)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 6(1)(f)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.11(1)(f)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: identify lawful basis"
+        ]
+      }
+    },
+    {
+      "id": "LAW-03",
+      "domain": "LAW",
+      "title": "Consent capture, records and withdrawal",
+      "objective": "Where consent is relied on, it is specific, informed and unambiguous, is recorded with what the person saw, and is as easy to withdraw as to give.",
+      "phase": 2,
+      "profile": "essential",
+      "triggers": [
+        "consent"
+      ],
+      "dependsOn": [
+        "LAW-01"
+      ],
+      "owner": "product",
+      "effort": "M",
+      "recurrence": "annual",
+      "steps": [
+        "Inventory every consent request.",
+        "Fix wording, granularity and pre-ticked boxes.",
+        "Store consent records: who, when, what text, which channel.",
+        "Build withdrawal into each channel and propagate it to downstream systems."
+      ],
+      "deliverables": [
+        "Consent inventory",
+        "Consent records"
+      ],
+      "evidence": [
+        "Sample consent records",
+        "Withdrawal test results"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.26",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.11(2)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.32",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020 (consent requirements)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Arts. 4(11), 7",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 4(11), 7",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: obtain and record consent"
+        ],
+        "NISTPF": [
+          "CT.PO-P",
+          "CM.AW-P"
+        ]
+      }
+    },
+    {
+      "id": "LAW-04",
+      "domain": "LAW",
+      "title": "Conditions for sensitive data",
+      "objective": "Each use of sensitive or special category data meets a specific condition under each law in scope, with the extra documentation some laws require.",
+      "phase": 1,
+      "profile": "essential",
+      "triggers": [
+        "sensitive"
+      ],
+      "dependsOn": [
+        "LAW-01"
+      ],
+      "owner": "privacy-lead",
+      "effort": "M",
+      "recurrence": "per-event",
+      "module": "datamap",
+      "steps": [
+        "Identify activities using sensitive data under each law’s own list.",
+        "Record the condition relied on.",
+        "Write any required policy document (for example the UK appropriate policy document).",
+        "Apply stronger security and access limits."
+      ],
+      "deliverables": [
+        "Sensitive data conditions in the record",
+        "Appropriate policy document where required"
+      ],
+      "evidence": [
+        "Record entries",
+        "Policy documents"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.30",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA ss.26–33",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA ss.44–46",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020 (licence for sensitive data)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZW": [
+          {
+            "ref": "CDPA 2021 s.11",
+            "kind": "requires",
+            "conf": "unverified"
+          }
+        ],
+        "GH": [
+          {
+            "ref": "Act 843 s.37",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Arts. 9–10",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 9–10; DPA 2018 Sch. 1 (appropriate policy document)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: identify lawful basis"
+        ],
+        "NISTPF": [
+          "CT.PO-P"
+        ]
+      },
+      "notes": "Lists differ: Kenya treats property, marital and family details as sensitive; Egypt includes financial data; POPIA includes criminal behaviour."
+    },
+    {
+      "id": "LAW-05",
+      "domain": "LAW",
+      "title": "Children’s data",
+      "objective": "Services likely to be used by children have age assurance proportionate to risk, parental consent where the law requires it, and child-appropriate design.",
+      "phase": 2,
+      "profile": "essential",
+      "triggers": [
+        "children"
+      ],
+      "dependsOn": [
+        "LAW-01"
+      ],
+      "owner": "product",
+      "effort": "M",
+      "recurrence": "annual",
+      "steps": [
+        "Identify services and activities involving children.",
+        "Apply the age threshold and consent rule of each law in scope.",
+        "Design defaults for children: high privacy, no profiling for marketing, clear language."
+      ],
+      "deliverables": [
+        "Children’s data assessment",
+        "Age assurance and parental consent design"
+      ],
+      "evidence": [
+        "Assessment",
+        "Screens and flows"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.31",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA ss.34–35",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.33",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020 (guardian consent)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 8",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 8; Age Appropriate Design Code",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "The Data (Use and Access) Act 2025 adds a duty to consider children’s higher protection matters for online services."
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: obtain and record consent"
+        ]
+      }
+    },
+    {
+      "id": "LAW-06",
+      "domain": "LAW",
+      "title": "Purpose limitation and compatibility checks",
+      "objective": "New uses of existing data are checked for compatibility with the original purpose before they start.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "LAW-01"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "per-event",
+      "steps": [
+        "Add a compatibility question to change and project intake.",
+        "Record the assessment and any new basis or notice needed."
+      ],
+      "deliverables": [
+        "Compatibility assessments"
+      ],
+      "evidence": [
+        "Assessments for recent new uses"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.24(1)(b)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA ss.13, 15",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Arts. 5(1)(b), 6(4)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 5(1)(b), 6(4)",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "The Data (Use and Access) Act 2025 adds Annex 2 compatible purposes."
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: identify and document purpose"
+        ],
+        "NISTPF": [
+          "CT.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "LAW-07",
+      "domain": "LAW",
+      "title": "Direct marketing rules",
+      "objective": "Electronic and other direct marketing meets each law’s consent, soft opt-in and opt-out rules, and suppression lists are honoured everywhere.",
+      "phase": 2,
+      "profile": "essential",
+      "triggers": [
+        "marketing"
+      ],
+      "dependsOn": [
+        "LAW-01"
+      ],
+      "owner": "marketing",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "List marketing channels and the basis for each.",
+        "Fix consent and opt-out mechanics.",
+        "Maintain one suppression list used by every tool."
+      ],
+      "deliverables": [
+        "Marketing compliance checklist",
+        "Suppression list"
+      ],
+      "evidence": [
+        "Campaign sign-offs",
+        "Suppression test"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.36",
+            "kind": "requires",
+            "conf": "secondary",
+            "note": "Right to object, including to direct marketing."
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.69",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.37",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020 (electronic marketing licence and consent)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "ePrivacy Directive Art. 13; GDPR Art. 21(2)–(3)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "PECR regs. 21–22; UK GDPR Art. 21(2)–(3)",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "PECR fines raised to UK GDPR levels by the Data (Use and Access) Act 2025."
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "CT.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "TRN-01",
+      "domain": "TRN",
+      "title": "Privacy notices for customers and the public",
+      "objective": "Clear, layered notices tell people what you collect, why, on what basis, who receives it, where it goes, how long you keep it, their rights and how to complain.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "LAW-01"
+      ],
+      "owner": "legal",
+      "effort": "M",
+      "recurrence": "annual",
+      "module": "governance",
+      "steps": [
+        "Draft from the record of processing, not from a template.",
+        "Include each law’s mandatory items and the regulator’s contact.",
+        "Publish where data is collected and keep versions."
+      ],
+      "deliverables": [
+        "Privacy notice"
+      ],
+      "evidence": [
+        "Published notice with version and date"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.27",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.18",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.29",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "GH": [
+          {
+            "ref": "Act 843 (notice at collection)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020 (information to data subjects)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Arts. 12–14",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 12–14",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "From 19 June 2026 notices must also tell people about the right to complain to the controller."
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: provide information to PII principals"
+        ],
+        "NISTPF": [
+          "CM.AW-P",
+          "CM.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "TRN-02",
+      "domain": "TRN",
+      "title": "Employee and candidate privacy notices",
+      "objective": "Staff, contractors and applicants receive a notice covering HR processing, monitoring and their rights.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "LAW-01"
+      ],
+      "owner": "hr",
+      "effort": "S",
+      "recurrence": "annual",
+      "module": "governance",
+      "steps": [
+        "Draft from the HR activities in the record.",
+        "Cover monitoring, background checks and retention.",
+        "Issue at onboarding and in the recruitment flow."
+      ],
+      "deliverables": [
+        "Employee notice",
+        "Candidate notice"
+      ],
+      "evidence": [
+        "Notices and acknowledgement records"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.27",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.18",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.29",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Arts. 13–14",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 13–14",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: provide information to PII principals"
+        ],
+        "NISTPF": [
+          "CM.AW-P"
+        ]
+      }
+    },
+    {
+      "id": "TRN-03",
+      "domain": "TRN",
+      "title": "Cookies and similar technologies",
+      "objective": "Non-essential cookies and trackers only run with valid consent where required, refusal is as easy as acceptance, and the cookie notice matches what is actually set.",
+      "phase": 2,
+      "profile": "essential",
+      "triggers": [
+        "website"
+      ],
+      "dependsOn": [
+        "TRN-01"
+      ],
+      "owner": "product",
+      "effort": "M",
+      "recurrence": "semi-annual",
+      "module": "governance",
+      "steps": [
+        "Scan sites and apps to list every cookie, SDK and pixel.",
+        "Classify each as essential, analytics, functional or advertising.",
+        "Configure consent before non-essential tags fire.",
+        "Re-scan after each release that changes tags."
+      ],
+      "deliverables": [
+        "Cookie inventory",
+        "Consent banner configuration",
+        "Cookie notice"
+      ],
+      "evidence": [
+        "Scan results",
+        "Banner screenshots and test results"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "GAID 2025 (cookies and similar technologies)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "ePrivacy Directive Art. 5(3)",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "The Digital Omnibus would add consent-free purposes and single-click refusal; not law as at November 2026."
+          }
+        ],
+        "UK": [
+          {
+            "ref": "PECR reg. 6",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Exemptions for certain analytics and functionality cookies in force from 5 February 2026."
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.11",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.30",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "CT.PO-P",
+          "CM.AW-P"
+        ]
+      }
+    },
+    {
+      "id": "TRN-04",
+      "domain": "TRN",
+      "title": "Access-to-information manual",
+      "objective": "The manual describing your records, processing and how to request access is current, published and filed where required.",
+      "phase": 1,
+      "profile": "essential",
+      "onlyFor": [
+        "ZA"
+      ],
+      "dependsOn": [
+        "INV-02"
+      ],
+      "owner": "legal",
+      "effort": "S",
+      "recurrence": "annual",
+      "module": "governance",
+      "steps": [
+        "Update the manual from the record of processing.",
+        "Include the POPIA processing information.",
+        "Publish on the website and make it available at the head office."
+      ],
+      "deliverables": [
+        "PAIA manual"
+      ],
+      "evidence": [
+        "Published manual with date"
+      ],
+      "laws": {
+        "ZA": [
+          {
+            "ref": "PAIA s.51; POPIA s.17",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {}
+    },
+    {
+      "id": "TRN-05",
+      "domain": "TRN",
+      "title": "Monitoring and CCTV notices",
+      "objective": "People are told before they are monitored by CCTV, telematics, workplace monitoring or biometric systems, and monitoring is proportionate.",
+      "phase": 2,
+      "profile": "essential",
+      "triggers": [
+        "monitoring"
+      ],
+      "dependsOn": [
+        "LAW-01"
+      ],
+      "owner": "security",
+      "effort": "S",
+      "recurrence": "annual",
+      "module": "governance",
+      "steps": [
+        "List monitoring systems and their purposes.",
+        "Place signage and layered notices.",
+        "Set access and retention rules for footage and logs."
+      ],
+      "deliverables": [
+        "Monitoring notices",
+        "Monitoring policy"
+      ],
+      "evidence": [
+        "Signage photos",
+        "Policy"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.27",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.18",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.29",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Arts. 13, 35(3)(c)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 13, 35(3)(c)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "CM.AW-P"
+        ]
+      }
+    },
+    {
+      "id": "TRN-06",
+      "domain": "TRN",
+      "title": "Just-in-time notices and privacy dashboards",
+      "objective": "Products explain data use at the moment it matters and give people self-service controls over their data and preferences.",
+      "phase": 4,
+      "profile": "advanced",
+      "dependsOn": [
+        "TRN-01",
+        "RSK-04"
+      ],
+      "owner": "product",
+      "effort": "M",
+      "recurrence": "annual",
+      "steps": [
+        "Identify moments where people make data choices.",
+        "Add contextual explanations and controls.",
+        "Offer a preference centre that writes to the consent records."
+      ],
+      "deliverables": [
+        "Privacy UX patterns",
+        "Preference centre"
+      ],
+      "evidence": [
+        "Screens",
+        "Usage data"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 12(1)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 12(1)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "CM.AW-P",
+          "CT.DM-P"
+        ]
+      }
+    },
+    {
+      "id": "RTS-01",
+      "domain": "RTS",
+      "title": "Rights request procedure",
+      "objective": "A written procedure covers every right available under each law in scope, with deadlines, extensions, exemptions and refusal grounds.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "GOV-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "M",
+      "recurrence": "annual",
+      "module": "governance",
+      "steps": [
+        "List the rights and deadlines for each law in scope.",
+        "Set the verification standard and the search method.",
+        "Write templates for each response and refusal."
+      ],
+      "deliverables": [
+        "Rights procedure",
+        "Response templates"
+      ],
+      "evidence": [
+        "Approved procedure"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA ss.34–38",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA ss.23–25; PAIA",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA ss.26, 40; General Regulations 2021",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "GH": [
+          {
+            "ref": "Act 843 (rights of data subjects)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020 Art. 2",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZW": [
+          {
+            "ref": "CDPA 2021 s.14",
+            "kind": "requires",
+            "conf": "unverified"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Arts. 12, 15–22",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 12, 15–22",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Data (Use and Access) Act 2025 rules on time limits and reasonable searches apply to requests from 5 February 2026."
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: obligations to PII principals"
+        ],
+        "NISTPF": [
+          "CT.DM-P"
+        ]
+      }
+    },
+    {
+      "id": "RTS-02",
+      "domain": "RTS",
+      "title": "Request intake and identity verification",
+      "objective": "Requests are recognised on any channel, logged the same day, and identity is verified proportionately without asking for more data than needed.",
+      "phase": 2,
+      "profile": "essential",
+      "dependsOn": [
+        "RTS-01"
+      ],
+      "owner": "customer-service",
+      "effort": "S",
+      "recurrence": "continuous",
+      "module": "requests",
+      "steps": [
+        "Train front-line staff to recognise requests in any wording.",
+        "Provide a web form and a monitored mailbox.",
+        "Apply the verification standard from the procedure."
+      ],
+      "deliverables": [
+        "Intake channels",
+        "Verification standard"
+      ],
+      "evidence": [
+        "Request log entries with receipt dates"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Arts. 12(2), 12(6)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 12(2), 12(6)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Data Protection (General) Regulations 2021",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: obligations to PII principals"
+        ],
+        "NISTPF": [
+          "CT.DM-P"
+        ]
+      }
+    },
+    {
+      "id": "RTS-03",
+      "domain": "RTS",
+      "title": "Request log and deadline tracking",
+      "objective": "Every request is logged with its deadline under the requester’s law and is answered on time.",
+      "phase": 2,
+      "profile": "essential",
+      "dependsOn": [
+        "RTS-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "continuous",
+      "module": "requests",
+      "steps": [
+        "Log every request with type, law and deadline.",
+        "Track extensions and their notified reasons.",
+        "Review overdue items weekly."
+      ],
+      "deliverables": [
+        "Request log"
+      ],
+      "evidence": [
+        "Log showing timeliness"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 12(3)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 12(3)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.26; General Regulations 2021",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "CT.DM-P"
+        ]
+      }
+    },
+    {
+      "id": "RTS-04",
+      "domain": "RTS",
+      "title": "System search, extraction and erasure playbooks",
+      "objective": "For each system there is a tested way to find, export, correct and delete one person’s data.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "INV-01",
+        "RTS-01"
+      ],
+      "owner": "it",
+      "effort": "M",
+      "recurrence": "annual",
+      "module": "requests",
+      "steps": [
+        "Write a short playbook per system: search keys, export, correction and deletion steps.",
+        "Test with a dummy record.",
+        "Include backups and vendor systems."
+      ],
+      "deliverables": [
+        "System playbooks"
+      ],
+      "evidence": [
+        "Test records"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Arts. 15–20",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 15–20",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "CT.DM-P"
+        ]
+      }
+    },
+    {
+      "id": "RTS-05",
+      "domain": "RTS",
+      "title": "Complaints handling",
+      "objective": "People can complain to you about how their data is handled, complaints are acknowledged and investigated, and they are told how to escalate to the regulator.",
+      "phase": 2,
+      "profile": "essential",
+      "dependsOn": [
+        "RTS-01"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "continuous",
+      "module": "requests",
+      "steps": [
+        "Publish how to complain.",
+        "Acknowledge, investigate proportionately and keep the person informed.",
+        "Record each complaint, the steps taken and the outcome."
+      ],
+      "deliverables": [
+        "Complaints procedure",
+        "Complaints log"
+      ],
+      "evidence": [
+        "Log with acknowledgement and outcome dates"
+      ],
+      "laws": {
+        "UK": [
+          {
+            "ref": "DPA 2018 ss.164A–164B (inserted by the Data (Use and Access) Act 2025)",
+            "kind": "requires",
+            "conf": "secondary",
+            "note": "In force 19 June 2026: acknowledge within 30 days, investigate without undue delay, keep records."
+          }
+        ],
+        "NG": [
+          {
+            "ref": "NDPA s.46; GAID 2025 (complaints and remediation reviewed at audit)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.74",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 77",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: handling complaints"
+        ],
+        "NISTPF": [
+          "CM.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "RTS-06",
+      "domain": "RTS",
+      "title": "Rights and complaints review",
+      "objective": "Trends in requests and complaints are reviewed so root causes are fixed rather than handled one case at a time.",
+      "phase": 3,
+      "profile": "standard",
+      "dependsOn": [
+        "RTS-03",
+        "RTS-05"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "semi-annual",
+      "steps": [
+        "Report volumes, timeliness and outcomes.",
+        "Identify recurring causes.",
+        "Feed fixes into the plan."
+      ],
+      "deliverables": [
+        "Rights review"
+      ],
+      "evidence": [
+        "Review notes"
+      ],
+      "laws": {},
+      "standards": {
+        "ISO27701": [
+          "9.1 Monitoring, measurement, analysis and evaluation"
+        ],
+        "NISTPF": [
+          "GV.MT-P"
+        ]
+      }
+    },
+    {
+      "id": "RSK-01",
+      "domain": "RSK",
+      "title": "Privacy risk method and register",
+      "objective": "Privacy risks to individuals and to the organisation are assessed with one method and held in a register with owners and treatments.",
+      "phase": 1,
+      "profile": "standard",
+      "dependsOn": [
+        "GOV-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "M",
+      "recurrence": "annual",
+      "steps": [
+        "Adopt a likelihood and severity scale focused on harm to people.",
+        "Align it with the enterprise risk method.",
+        "Populate the register from the record of processing and recent incidents."
+      ],
+      "deliverables": [
+        "Risk method",
+        "Privacy risk register"
+      ],
+      "evidence": [
+        "Register with owners and treatment dates"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Arts. 24, 32",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 24, 32",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "6.1.2 Privacy risk assessment",
+          "6.1.3 Privacy risk treatment"
+        ],
+        "NISTPF": [
+          "ID.RA-P",
+          "GV.RM-P"
+        ]
+      }
+    },
+    {
+      "id": "RSK-02",
+      "domain": "RSK",
+      "title": "DPIA screening at intake",
+      "objective": "New projects, systems, vendors and changes are screened for DPIA triggers under each law in scope before work starts.",
+      "phase": 2,
+      "profile": "essential",
+      "dependsOn": [
+        "INV-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "continuous",
+      "module": "assessments",
+      "steps": [
+        "Add a screening question set to project, procurement and change intake.",
+        "Include each law’s trigger list.",
+        "Record screening outcomes, including decisions not to do a DPIA."
+      ],
+      "deliverables": [
+        "Screening questionnaire",
+        "Screening log"
+      ],
+      "evidence": [
+        "Screening records for recent projects"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.28; GAID 2025 Art. 28",
+            "kind": "requires",
+            "conf": "secondary",
+            "note": "Trigger list from practitioner summaries."
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA Regulations 2018 reg. 4(1)(b)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.31",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "GH": [
+          {
+            "ref": "Data Protection Commission renewal requirements",
+            "kind": "supports",
+            "conf": "secondary",
+            "note": "The pending Data Protection Bill 2025 would make DPIAs mandatory for high-risk processing."
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 35(1), (3)–(4)",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "National DPIA lists apply; the Digital Omnibus would replace them with one EU list (not law)."
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 35(1), (3)–(4)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "8.2 Privacy risk assessment"
+        ],
+        "NISTPF": [
+          "ID.RA-P"
+        ]
+      }
+    },
+    {
+      "id": "RSK-03",
+      "domain": "RSK",
+      "title": "DPIAs completed, signed off and reviewed",
+      "objective": "Required DPIAs are completed before processing, with DPO advice, risk treatment and sign-off, and reviewed when processing changes.",
+      "phase": 2,
+      "profile": "essential",
+      "dependsOn": [
+        "RSK-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "L",
+      "recurrence": "per-event",
+      "module": "assessments",
+      "steps": [
+        "Complete the DPIA with the project team.",
+        "Record DPO advice and the decision on it.",
+        "Track mitigations to completion.",
+        "Set a review date."
+      ],
+      "deliverables": [
+        "Completed DPIAs"
+      ],
+      "evidence": [
+        "Signed DPIAs with mitigations tracked"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.28",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA Regulations 2018 reg. 4(1)(b)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.31",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 35(7), (9), (11)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 35(7), (9), (11)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "8.2 Privacy risk assessment",
+          "8.3 Privacy risk treatment"
+        ],
+        "NISTPF": [
+          "ID.RA-P"
+        ]
+      }
+    },
+    {
+      "id": "RSK-04",
+      "domain": "RSK",
+      "title": "Privacy by design in change and development",
+      "objective": "Privacy requirements are built into product, system and process design, with defaults that collect and expose the least data.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "RSK-02"
+      ],
+      "owner": "product",
+      "effort": "M",
+      "recurrence": "continuous",
+      "steps": [
+        "Add privacy requirements to design templates and definitions of done.",
+        "Give engineers patterns: minimisation, pseudonymisation, retention hooks, access by role.",
+        "Review high-risk designs with the privacy lead."
+      ],
+      "deliverables": [
+        "Privacy requirements checklist",
+        "Design review records"
+      ],
+      "evidence": [
+        "Checklists attached to recent releases"
+      ],
+      "laws": {
+        "KE": [
+          {
+            "ref": "Kenya DPA s.41",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "NG": [
+          {
+            "ref": "NDPA s.24; GAID 2025 (privacy by design)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 25",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 25",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: privacy by design and by default"
+        ],
+        "NISTPF": [
+          "CT.DP-P",
+          "CT.DM-P"
+        ]
+      }
+    },
+    {
+      "id": "RSK-05",
+      "domain": "RSK",
+      "title": "Risk treatment and acceptance",
+      "objective": "Risks above appetite are treated or formally accepted by the right person, and residual risk is tracked.",
+      "phase": 3,
+      "profile": "standard",
+      "dependsOn": [
+        "RSK-01"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "quarterly",
+      "steps": [
+        "Set a risk appetite and acceptance authority.",
+        "Track treatment actions to completion.",
+        "Record formal acceptance of residual risk."
+      ],
+      "deliverables": [
+        "Risk treatment plan",
+        "Acceptance records"
+      ],
+      "evidence": [
+        "Treatment status",
+        "Signed acceptances"
+      ],
+      "laws": {},
+      "standards": {
+        "ISO27701": [
+          "6.1.3 Privacy risk treatment",
+          "8.3 Privacy risk treatment"
+        ],
+        "NISTPF": [
+          "GV.RM-P"
+        ]
+      }
+    },
+    {
+      "id": "RSK-06",
+      "domain": "RSK",
+      "title": "Privacy threat modelling",
+      "objective": "High-risk systems are threat-modelled for privacy (linkability, identifiability, disclosure, unawareness, non-compliance) as well as security.",
+      "phase": 4,
+      "profile": "advanced",
+      "dependsOn": [
+        "RSK-04"
+      ],
+      "owner": "security",
+      "effort": "M",
+      "recurrence": "per-event",
+      "steps": [
+        "Choose a method such as LINDDUN.",
+        "Model the highest-risk systems first.",
+        "Track resulting design changes."
+      ],
+      "deliverables": [
+        "Threat models"
+      ],
+      "evidence": [
+        "Threat models with actions"
+      ],
+      "laws": {},
+      "standards": {
+        "NISTPF": [
+          "ID.RA-P",
+          "CT.DP-P"
+        ]
+      }
+    },
+    {
+      "id": "TPR-01",
+      "domain": "TPR",
+      "title": "Vendor and processor register",
+      "objective": "Every third party that receives or accesses personal data is listed with its role, service, location and contract status.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "INV-01"
+      ],
+      "owner": "procurement",
+      "effort": "S",
+      "recurrence": "semi-annual",
+      "module": "vendors",
+      "steps": [
+        "Build the list from accounts payable and the system inventory.",
+        "Classify each as processor, sub-processor, joint or independent controller.",
+        "Record country and contract status."
+      ],
+      "deliverables": [
+        "Vendor register"
+      ],
+      "evidence": [
+        "Register"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 30(1)(d)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 30(1)(d)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: information security in supplier relationships"
+        ],
+        "NISTPF": [
+          "ID.DE-P"
+        ]
+      }
+    },
+    {
+      "id": "TPR-02",
+      "domain": "TPR",
+      "title": "Vendor due diligence before engagement",
+      "objective": "Processors are only engaged after checking they give sufficient guarantees, scaled to the data and risk involved, and the record of that check is kept.",
+      "phase": 2,
+      "profile": "essential",
+      "dependsOn": [
+        "TPR-01"
+      ],
+      "owner": "procurement",
+      "effort": "M",
+      "recurrence": "per-event",
+      "module": "vendors",
+      "steps": [
+        "Tier vendors by data sensitivity, volume and location.",
+        "Use a questionnaire proportionate to the tier.",
+        "Review certifications, breach history and sub-processors.",
+        "Record the decision and any conditions."
+      ],
+      "deliverables": [
+        "Due diligence questionnaire",
+        "Completed assessments"
+      ],
+      "evidence": [
+        "Assessment records for current vendors"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.29",
+            "kind": "requires",
+            "conf": "primary"
+          },
+          {
+            "ref": "GAID 2025 (due diligence on processors; records producible to the Commission)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA ss.19(2), 21",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.42",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 28(1)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 28(1)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: information security in supplier relationships"
+        ],
+        "NISTPF": [
+          "ID.DE-P"
+        ]
+      }
+    },
+    {
+      "id": "TPR-03",
+      "domain": "TPR",
+      "title": "Data processing agreements",
+      "objective": "Every processor relationship has a written agreement with the terms each law in scope requires.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "TPR-01"
+      ],
+      "owner": "legal",
+      "effort": "M",
+      "recurrence": "per-event",
+      "module": "vendors",
+      "steps": [
+        "Prepare a DPA template that covers every law in scope.",
+        "Prioritise high-risk vendors.",
+        "Track signature and any negotiated deviations."
+      ],
+      "deliverables": [
+        "DPA template",
+        "Signed DPAs"
+      ],
+      "evidence": [
+        "Signed DPA per processor"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.29",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.21",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.42",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 28(3)–(4)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 28(3)–(4)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: contracts with PII processors"
+        ],
+        "NISTPF": [
+          "ID.DE-P"
+        ]
+      }
+    },
+    {
+      "id": "TPR-04",
+      "domain": "TPR",
+      "title": "Cross-border transfer mechanisms",
+      "objective": "Every transfer outside a jurisdiction rests on a valid mechanism under that jurisdiction’s law, recorded against the flow.",
+      "phase": 2,
+      "profile": "essential",
+      "triggers": [
+        "transfers"
+      ],
+      "dependsOn": [
+        "INV-02",
+        "TPR-01"
+      ],
+      "owner": "legal",
+      "effort": "M",
+      "recurrence": "annual",
+      "module": "vendors",
+      "steps": [
+        "List transfers from the flow map and vendor register.",
+        "Pick the mechanism per law: adequacy, approved clauses, binding corporate rules, or a derogation.",
+        "Put the mechanism in place and record it."
+      ],
+      "deliverables": [
+        "Transfer register",
+        "Executed transfer instruments"
+      ],
+      "evidence": [
+        "Transfer register with mechanisms"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA ss.41–43",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.72",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA ss.48–50",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020 Arts. 14–16 (PDPC licence or permit)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZW": [
+          {
+            "ref": "CDPA 2021 s.28",
+            "kind": "requires",
+            "conf": "unverified"
+          }
+        ],
+        "GH": [
+          {
+            "ref": "Data Protection Bill 2025 (pending): transfer rules and transfer impact assessments",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Arts. 44–49",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 44–49",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "“Not materially lower” test in force from 5 February 2026."
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: PII transfer"
+        ],
+        "NISTPF": [
+          "ID.DE-P"
+        ]
+      }
+    },
+    {
+      "id": "TPR-05",
+      "domain": "TPR",
+      "title": "Transfer impact assessments",
+      "objective": "Transfers relying on contractual safeguards are assessed for the destination’s laws and practices, with supplementary measures where needed.",
+      "phase": 2,
+      "profile": "standard",
+      "triggers": [
+        "transfers"
+      ],
+      "dependsOn": [
+        "TPR-04"
+      ],
+      "owner": "legal",
+      "effort": "M",
+      "recurrence": "per-event",
+      "module": "assessments",
+      "steps": [
+        "Prioritise transfers of sensitive data and large volumes.",
+        "Assess destination access laws and practices.",
+        "Record supplementary measures and the conclusion."
+      ],
+      "deliverables": [
+        "Transfer impact assessments"
+      ],
+      "evidence": [
+        "Signed assessments"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 46",
+            "kind": "supports",
+            "conf": "primary",
+            "note": "Expected under the EDPB’s recommendations on supplementary measures."
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 46",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "ODPC guidance on cross-border transfers",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "ID.DE-P"
+        ]
+      }
+    },
+    {
+      "id": "TPR-06",
+      "domain": "TPR",
+      "title": "Sub-processor oversight",
+      "objective": "You know each processor’s sub-processors, approve changes as your contracts require, and can object.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "TPR-03"
+      ],
+      "owner": "procurement",
+      "effort": "S",
+      "recurrence": "continuous",
+      "module": "vendors",
+      "steps": [
+        "Obtain sub-processor lists.",
+        "Subscribe to change notices.",
+        "Assess material changes."
+      ],
+      "deliverables": [
+        "Sub-processor records"
+      ],
+      "evidence": [
+        "Current lists and change decisions"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 28(2), (4)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 28(2), (4)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "NG": [
+          {
+            "ref": "NDPA s.29",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.2: engagement of a subcontractor"
+        ],
+        "NISTPF": [
+          "ID.DE-P"
+        ]
+      }
+    },
+    {
+      "id": "TPR-07",
+      "domain": "TPR",
+      "title": "Periodic vendor review and exit",
+      "objective": "Vendors are re-reviewed on a cycle set by their risk tier, and data is returned or deleted with proof when a relationship ends.",
+      "phase": 3,
+      "profile": "standard",
+      "dependsOn": [
+        "TPR-02"
+      ],
+      "owner": "procurement",
+      "effort": "M",
+      "recurrence": "annual",
+      "module": "vendors",
+      "steps": [
+        "Set review cycles by tier.",
+        "Re-run due diligence at each review.",
+        "Obtain deletion or return certificates at exit."
+      ],
+      "deliverables": [
+        "Review schedule",
+        "Exit certificates"
+      ],
+      "evidence": [
+        "Review records",
+        "Certificates"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 28(3)(g)–(h)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 28(3)(g)–(h)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.21",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "ID.DE-P"
+        ]
+      }
+    },
+    {
+      "id": "TPR-08",
+      "domain": "TPR",
+      "title": "Data sharing and joint controller arrangements",
+      "objective": "Sharing with other controllers is documented, lawful and governed by an agreement setting each party’s responsibilities.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "LAW-01"
+      ],
+      "owner": "legal",
+      "effort": "S",
+      "recurrence": "per-event",
+      "steps": [
+        "List recurring sharing with other controllers.",
+        "Document the basis and conditions.",
+        "Sign data sharing or joint controller agreements."
+      ],
+      "deliverables": [
+        "Data sharing agreements"
+      ],
+      "evidence": [
+        "Agreements"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 26",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 26; ICO data sharing code",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: joint PII controller"
+        ],
+        "NISTPF": [
+          "ID.DE-P"
+        ]
+      }
+    },
+    {
+      "id": "TPR-09",
+      "domain": "TPR",
+      "title": "Processor duties to clients",
+      "objective": "When you act as processor, you follow client instructions, help them meet their obligations, notify them of breaches without delay, and control your own sub-processors.",
+      "phase": 2,
+      "profile": "essential",
+      "triggers": [
+        "processor"
+      ],
+      "dependsOn": [
+        "INV-03"
+      ],
+      "owner": "legal",
+      "effort": "M",
+      "recurrence": "continuous",
+      "steps": [
+        "Standardise your own DPA offered to clients.",
+        "Set up an internal route for client instructions and assistance requests.",
+        "Set breach notification to clients in hours, not days."
+      ],
+      "deliverables": [
+        "Processor DPA",
+        "Client assistance procedure"
+      ],
+      "evidence": [
+        "Signed client DPAs",
+        "Assistance log"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.29",
+            "kind": "requires",
+            "conf": "primary"
+          },
+          {
+            "ref": "NDPA s.40(1)",
+            "kind": "requires",
+            "conf": "secondary",
+            "note": "Processor notifies the controller of a breach."
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA ss.20–21",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA ss.42–43",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Arts. 28, 33(2)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 28, 33(2)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.2: PII processor controls"
+        ],
+        "NISTPF": [
+          "ID.DE-P"
+        ]
+      }
+    },
+    {
+      "id": "SEC-01",
+      "domain": "SEC",
+      "title": "Security policy and risk-based measures",
+      "objective": "An information security policy and baseline set measures appropriate to the risk of the personal data processed.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "GOV-01"
+      ],
+      "owner": "security",
+      "effort": "M",
+      "recurrence": "annual",
+      "module": "governance",
+      "steps": [
+        "Adopt a security policy and a baseline control set.",
+        "Map the baseline to the classification scheme.",
+        "Record gaps and treatments in the risk register."
+      ],
+      "deliverables": [
+        "Information security policy",
+        "Security baseline"
+      ],
+      "evidence": [
+        "Approved policy",
+        "Baseline assessment"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.39",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.19",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.41",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "GH": [
+          {
+            "ref": "Act 843 (security measures)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZW": [
+          {
+            "ref": "CDPA 2021 (security of processing)",
+            "kind": "requires",
+            "conf": "unverified"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 32",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 32",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: shared information security controls"
+        ],
+        "NISTPF": [
+          "PR.PO-P"
+        ]
+      },
+      "notes": "If you hold or are building towards ISO/IEC 27001, reuse its policy and Statement of Applicability rather than writing a parallel set."
+    },
+    {
+      "id": "SEC-02",
+      "domain": "SEC",
+      "title": "Access control, least privilege and MFA",
+      "objective": "Access to personal data is granted by role, reviewed regularly and protected by multi-factor authentication on remote and privileged access.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "INV-01"
+      ],
+      "owner": "it",
+      "effort": "M",
+      "recurrence": "quarterly",
+      "module": "datamap",
+      "steps": [
+        "Define roles and what each may access.",
+        "Enforce MFA on email, remote access, admin and systems with sensitive data.",
+        "Review access quarterly for high-risk systems and at every leaver."
+      ],
+      "deliverables": [
+        "Access control standard",
+        "Access reviews"
+      ],
+      "evidence": [
+        "MFA coverage report",
+        "Access review records"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.39",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.19",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 32(1)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 32(1)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: access control"
+        ],
+        "NISTPF": [
+          "PR.AC-P"
+        ]
+      }
+    },
+    {
+      "id": "SEC-03",
+      "domain": "SEC",
+      "title": "Encryption in transit and at rest",
+      "objective": "Personal data is encrypted in transit everywhere and at rest wherever the classification requires it, with keys managed properly.",
+      "phase": 2,
+      "profile": "essential",
+      "dependsOn": [
+        "INV-05"
+      ],
+      "owner": "it",
+      "effort": "M",
+      "recurrence": "annual",
+      "module": "datamap",
+      "steps": [
+        "Enforce TLS on all services.",
+        "Encrypt laptops, mobile devices, databases and backups holding sensitive data.",
+        "Document key management."
+      ],
+      "deliverables": [
+        "Encryption standard"
+      ],
+      "evidence": [
+        "Coverage report"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 32(1)(a)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 32(1)(a)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "NG": [
+          {
+            "ref": "NDPA s.39",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: use of cryptography"
+        ],
+        "NISTPF": [
+          "PR.DS-P"
+        ]
+      },
+      "notes": "Encryption also matters for breach duties: several laws relax notification to individuals when data was unintelligible."
+    },
+    {
+      "id": "SEC-04",
+      "domain": "SEC",
+      "title": "Logging and monitoring of access to personal data",
+      "objective": "Access to systems holding personal data is logged, logs are protected, and unusual access is detected and investigated.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "SEC-02"
+      ],
+      "owner": "security",
+      "effort": "M",
+      "recurrence": "continuous",
+      "module": "datamap",
+      "steps": [
+        "Turn on access logging for high-risk systems.",
+        "Centralise and protect logs.",
+        "Set alerts for bulk export and out-of-hours access."
+      ],
+      "deliverables": [
+        "Logging standard",
+        "Alert rules"
+      ],
+      "evidence": [
+        "Log coverage",
+        "Alert investigations"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 32",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 32",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: logging and monitoring"
+        ],
+        "NISTPF": [
+          "PR.PT-P"
+        ]
+      }
+    },
+    {
+      "id": "SEC-05",
+      "domain": "SEC",
+      "title": "Backup, resilience and restoration",
+      "objective": "Personal data can be restored in time after an incident, and restores are tested.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "INV-01"
+      ],
+      "owner": "it",
+      "effort": "M",
+      "recurrence": "semi-annual",
+      "module": "datamap",
+      "steps": [
+        "Back up systems according to their criticality.",
+        "Protect backups from ransomware.",
+        "Test restores twice a year."
+      ],
+      "deliverables": [
+        "Backup standard",
+        "Restore test results"
+      ],
+      "evidence": [
+        "Latest restore test"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 32(1)(b)–(c)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 32(1)(b)–(c)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: information backup"
+        ],
+        "NISTPF": [
+          "PR.PT-P"
+        ]
+      }
+    },
+    {
+      "id": "SEC-06",
+      "domain": "SEC",
+      "title": "Security testing and vulnerability management",
+      "objective": "Systems holding personal data are patched, scanned and tested, and the effectiveness of measures is evaluated regularly.",
+      "phase": 3,
+      "profile": "standard",
+      "dependsOn": [
+        "SEC-01"
+      ],
+      "owner": "security",
+      "effort": "M",
+      "recurrence": "annual",
+      "steps": [
+        "Patch within defined timelines.",
+        "Scan for vulnerabilities monthly.",
+        "Commission a penetration test of internet-facing systems each year."
+      ],
+      "deliverables": [
+        "Vulnerability reports",
+        "Penetration test report"
+      ],
+      "evidence": [
+        "Latest reports and remediation status"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 32(1)(d)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 32(1)(d)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.19(2)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: management of technical vulnerabilities"
+        ],
+        "NISTPF": [
+          "PR.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "SEC-07",
+      "domain": "SEC",
+      "title": "Endpoint, device and physical security",
+      "objective": "Laptops, phones, removable media, paper files and premises are protected in line with the data they hold.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "SEC-01"
+      ],
+      "owner": "it",
+      "effort": "M",
+      "recurrence": "annual",
+      "steps": [
+        "Manage devices centrally with encryption and remote wipe.",
+        "Set clear-desk and secure-print rules.",
+        "Control access to records rooms and data centres."
+      ],
+      "deliverables": [
+        "Device and physical security standard"
+      ],
+      "evidence": [
+        "Device management report",
+        "Site checks"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 32",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 32",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.19",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: physical and endpoint controls"
+        ],
+        "NISTPF": [
+          "PR.PT-P",
+          "PR.MA-P"
+        ]
+      }
+    },
+    {
+      "id": "SEC-08",
+      "domain": "SEC",
+      "title": "Pseudonymisation and privacy-enhancing technologies",
+      "objective": "Analytics, testing and AI work use pseudonymised, synthetic or aggregated data wherever the purpose allows.",
+      "phase": 4,
+      "profile": "advanced",
+      "dependsOn": [
+        "RSK-04"
+      ],
+      "owner": "data-science",
+      "effort": "L",
+      "recurrence": "annual",
+      "steps": [
+        "Identify uses that do not need direct identifiers.",
+        "Provide pseudonymisation and masking tools.",
+        "Ban production personal data in test environments without approval."
+      ],
+      "deliverables": [
+        "PET standard",
+        "Masked test datasets"
+      ],
+      "evidence": [
+        "Approvals and tool coverage"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Arts. 25, 32(1)(a)",
+            "kind": "supports",
+            "conf": "primary",
+            "note": "The Digital Omnibus would clarify when pseudonymised data is not personal data for a recipient; not law."
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 25, 32(1)(a)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "ODPC guidance on privacy-enhancing technologies (consultation)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "CT.DP-P"
+        ]
+      }
+    },
+    {
+      "id": "LIF-01",
+      "domain": "LIF",
+      "title": "Retention schedule",
+      "objective": "Each category of records has a retention period with its reason, trigger and disposal method, and systems are set to follow it.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "INV-02"
+      ],
+      "owner": "legal",
+      "effort": "M",
+      "recurrence": "annual",
+      "module": "governance",
+      "steps": [
+        "Collect statutory retention periods (tax, employment, sector rules).",
+        "Set periods for each activity in the record.",
+        "Approve the schedule and assign owners for disposal."
+      ],
+      "deliverables": [
+        "Retention schedule"
+      ],
+      "evidence": [
+        "Approved schedule",
+        "Retention entries in the record"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.24(1)(d)",
+            "kind": "requires",
+            "conf": "secondary"
+          },
+          {
+            "ref": "GAID 2025 (retention)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.14",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.39",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 5(1)(e)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 5(1)(e)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: PII retention"
+        ],
+        "NISTPF": [
+          "CT.DM-P"
+        ]
+      }
+    },
+    {
+      "id": "LIF-02",
+      "domain": "LIF",
+      "title": "Secure deletion and disposal",
+      "objective": "Data past its retention period is deleted, anonymised or securely destroyed, including in backups and with vendors, and disposal is recorded.",
+      "phase": 2,
+      "profile": "essential",
+      "dependsOn": [
+        "LIF-01"
+      ],
+      "owner": "it",
+      "effort": "M",
+      "recurrence": "quarterly",
+      "module": "datamap",
+      "steps": [
+        "Automate deletion where systems allow.",
+        "Run scheduled purges where they do not.",
+        "Use certified destruction for paper and devices.",
+        "Record what was disposed of."
+      ],
+      "deliverables": [
+        "Disposal procedure",
+        "Disposal log"
+      ],
+      "evidence": [
+        "Purge records",
+        "Destruction certificates"
+      ],
+      "laws": {
+        "ZA": [
+          {
+            "ref": "POPIA s.14(4)–(5)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.39",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Arts. 5(1)(e), 17",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 5(1)(e), 17",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: PII disposal"
+        ],
+        "NISTPF": [
+          "CT.DM-P"
+        ]
+      }
+    },
+    {
+      "id": "LIF-03",
+      "domain": "LIF",
+      "title": "Data minimisation reviews",
+      "objective": "Forms, systems and datasets collect and keep only what each purpose needs, checked periodically.",
+      "phase": 3,
+      "profile": "standard",
+      "dependsOn": [
+        "INV-02"
+      ],
+      "owner": "business-owners",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "Review collection forms against purposes.",
+        "Remove fields that are not needed.",
+        "Record the review."
+      ],
+      "deliverables": [
+        "Minimisation reviews"
+      ],
+      "evidence": [
+        "Review records"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.24(1)(c)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.10",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 5(1)(c)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 5(1)(c)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: limit collection"
+        ],
+        "NISTPF": [
+          "CT.DP-P"
+        ]
+      }
+    },
+    {
+      "id": "LIF-04",
+      "domain": "LIF",
+      "title": "Data quality and accuracy",
+      "objective": "Personal data used for decisions is accurate and up to date, and people can correct it easily.",
+      "phase": 3,
+      "profile": "standard",
+      "dependsOn": [
+        "INV-02"
+      ],
+      "owner": "business-owners",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "Identify data used for decisions about people.",
+        "Add validation and refresh routines.",
+        "Link correction requests to source systems."
+      ],
+      "deliverables": [
+        "Data quality checks"
+      ],
+      "evidence": [
+        "Quality reports"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.24(1)(e)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.16",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 5(1)(d)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 5(1)(d)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.1: accuracy and quality"
+        ],
+        "NISTPF": [
+          "CT.DM-P"
+        ]
+      }
+    },
+    {
+      "id": "LIF-05",
+      "domain": "LIF",
+      "title": "Archiving, legal holds and research use",
+      "objective": "Archived data, legal holds and research or statistical uses are governed so they do not become indefinite retention.",
+      "phase": 4,
+      "profile": "advanced",
+      "dependsOn": [
+        "LIF-01"
+      ],
+      "owner": "legal",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "Define when data moves to archive and who can access it.",
+        "Issue and release legal holds formally.",
+        "Apply research safeguards such as pseudonymisation."
+      ],
+      "deliverables": [
+        "Archive and legal hold procedure"
+      ],
+      "evidence": [
+        "Hold register"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 89",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 89",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "CT.DM-P"
+        ]
+      }
+    },
+    {
+      "id": "INC-01",
+      "domain": "INC",
+      "title": "Breach response plan and team",
+      "objective": "A tested plan names the response team, decision-makers, external advisers and each law’s notification test and clock.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "GOV-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "M",
+      "recurrence": "annual",
+      "module": "governance",
+      "steps": [
+        "Set roles: incident lead, privacy lead, legal, communications, IT.",
+        "Write each law’s notification test, clock and form into the plan.",
+        "Pre-arrange forensic and legal support."
+      ],
+      "deliverables": [
+        "Breach response plan"
+      ],
+      "evidence": [
+        "Approved plan with contact list"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.40",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "72 hours from awareness where there is a risk to rights and freedoms."
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.22",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "As soon as reasonably possible; reported through the Information Regulator’s e-portal since 2025."
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.43",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "72 hours where there is a real risk of harm."
+          }
+        ],
+        "GH": [
+          {
+            "ref": "Act 843 (notification of security compromises)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020 and Executive Regulations",
+            "kind": "requires",
+            "conf": "secondary",
+            "note": "72 hours to the PDPC; individuals within three working days."
+          }
+        ],
+        "ZW": [
+          {
+            "ref": "CDPA 2021; SI 155 of 2024",
+            "kind": "requires",
+            "conf": "secondary",
+            "note": "24 hours to POTRAZ."
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Arts. 33–34",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "72 hours. The Digital Omnibus would move to 96 hours for high-risk breaches only; not law."
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 33–34",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: information security incident management"
+        ],
+        "NISTPF": [
+          "PR.PO-P",
+          "CM.AW-P"
+        ]
+      }
+    },
+    {
+      "id": "INC-02",
+      "domain": "INC",
+      "title": "Detection and internal reporting",
+      "objective": "Staff and vendors report suspected breaches immediately through a known channel, and the clock is started correctly.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "INC-01"
+      ],
+      "owner": "security",
+      "effort": "S",
+      "recurrence": "continuous",
+      "module": "incidents",
+      "steps": [
+        "Publish one reporting channel.",
+        "Tell staff what to report and how fast.",
+        "Require vendors to report within hours."
+      ],
+      "deliverables": [
+        "Reporting channel",
+        "Staff guidance"
+      ],
+      "evidence": [
+        "Incident records with discovery and awareness times"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 33(1)–(2)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 33(1)–(2)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: information security event reporting"
+        ],
+        "NISTPF": [
+          "CM.AW-P"
+        ]
+      }
+    },
+    {
+      "id": "INC-03",
+      "domain": "INC",
+      "title": "Breach assessment and regulator notification",
+      "objective": "Each incident is assessed against each affected law’s test, and regulators are notified on time with the required content, or the decision not to notify is recorded.",
+      "phase": 2,
+      "profile": "essential",
+      "dependsOn": [
+        "INC-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "M",
+      "recurrence": "per-event",
+      "module": "incidents",
+      "steps": [
+        "Assess likelihood and severity of harm.",
+        "Apply each law’s test and start each clock.",
+        "Notify with the required content, then update as facts emerge."
+      ],
+      "deliverables": [
+        "Breach assessments",
+        "Regulator notifications"
+      ],
+      "evidence": [
+        "Assessments and notification receipts"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.40",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.22",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.43",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZW": [
+          {
+            "ref": "CDPA 2021",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 33",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 33",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: response to information security incidents"
+        ],
+        "NISTPF": [
+          "CM.AW-P"
+        ]
+      }
+    },
+    {
+      "id": "INC-04",
+      "domain": "INC",
+      "title": "Notifying affected people",
+      "objective": "Where the law requires it, affected people are told promptly in plain language what happened and what they can do.",
+      "phase": 2,
+      "profile": "essential",
+      "dependsOn": [
+        "INC-03"
+      ],
+      "owner": "legal",
+      "effort": "S",
+      "recurrence": "per-event",
+      "module": "incidents",
+      "steps": [
+        "Prepare notice templates.",
+        "Decide channel and timing.",
+        "Set up a support line for larger incidents."
+      ],
+      "deliverables": [
+        "Notice templates"
+      ],
+      "evidence": [
+        "Notices sent"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.40",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.22",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.43",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "EG": [
+          {
+            "ref": "PDPL 151/2020",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 34",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 34",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "CM.AW-P"
+        ]
+      }
+    },
+    {
+      "id": "INC-05",
+      "domain": "INC",
+      "title": "Breach register",
+      "objective": "Every personal data breach is recorded, notifiable or not, with facts, effects, decisions and remedial action.",
+      "phase": 2,
+      "profile": "essential",
+      "dependsOn": [
+        "INC-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "continuous",
+      "module": "incidents",
+      "steps": [
+        "Log every incident.",
+        "Record the notification decision and its reasons.",
+        "Close with root cause and lessons."
+      ],
+      "deliverables": [
+        "Breach register"
+      ],
+      "evidence": [
+        "Register"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 33(5)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 33(5)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "NG": [
+          {
+            "ref": "GAID 2025 (breach records reviewed at audit)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "NISTPF": [
+          "PR.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "INC-06",
+      "domain": "INC",
+      "title": "Breach exercises and lessons learned",
+      "objective": "The plan is rehearsed at least once a year and improved after every significant incident or exercise.",
+      "phase": 3,
+      "profile": "standard",
+      "dependsOn": [
+        "INC-01"
+      ],
+      "owner": "security",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "Run a tabletop exercise with a realistic scenario across several laws.",
+        "Record gaps and fix them."
+      ],
+      "deliverables": [
+        "Exercise report"
+      ],
+      "evidence": [
+        "Exercise report with actions"
+      ],
+      "laws": {},
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: learning from incidents"
+        ],
+        "NISTPF": [
+          "PR.PO-P"
+        ]
+      }
+    },
+    {
+      "id": "PPL-01",
+      "domain": "PPL",
+      "title": "Privacy training for all staff",
+      "objective": "Everyone with access to personal data completes induction and annual refresher training, and completion is tracked.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [
+        "GOV-04"
+      ],
+      "owner": "hr",
+      "effort": "M",
+      "recurrence": "annual",
+      "module": "governance",
+      "steps": [
+        "Build a short course on the policy, recognising requests and reporting breaches.",
+        "Make it part of onboarding.",
+        "Track completion; chase below 90 percent."
+      ],
+      "deliverables": [
+        "Training course",
+        "Completion records"
+      ],
+      "evidence": [
+        "Completion report"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "GAID 2025 (training)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA Regulations 2018 reg. 4(1)(e)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 39(1)(b)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 39(1)(b)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "7.2 Competence",
+          "7.3 Awareness"
+        ],
+        "NISTPF": [
+          "GV.AT-P"
+        ]
+      }
+    },
+    {
+      "id": "PPL-02",
+      "domain": "PPL",
+      "title": "Confidentiality and the employee lifecycle",
+      "objective": "Staff and contractors are bound to confidentiality, and joiner, mover and leaver steps protect personal data.",
+      "phase": 1,
+      "profile": "essential",
+      "dependsOn": [],
+      "owner": "hr",
+      "effort": "S",
+      "recurrence": "continuous",
+      "steps": [
+        "Add confidentiality terms to contracts.",
+        "Link HR events to access changes.",
+        "Recover devices and data at exit."
+      ],
+      "deliverables": [
+        "Confidentiality clauses",
+        "Joiner-mover-leaver procedure"
+      ],
+      "evidence": [
+        "Signed contracts",
+        "Leaver checklists"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Arts. 29, 32(4)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 29, 32(4)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.20",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "Annex A.3: people controls"
+        ],
+        "NISTPF": [
+          "GV.AT-P"
+        ]
+      }
+    },
+    {
+      "id": "PPL-03",
+      "domain": "PPL",
+      "title": "Role-based training for high-risk roles",
+      "objective": "Roles with elevated risk (HR, customer service, marketing, engineering, data science) get training specific to their work.",
+      "phase": 3,
+      "profile": "standard",
+      "dependsOn": [
+        "PPL-01"
+      ],
+      "owner": "privacy-lead",
+      "effort": "M",
+      "recurrence": "annual",
+      "steps": [
+        "Identify high-risk roles.",
+        "Build short role modules.",
+        "Track completion separately."
+      ],
+      "deliverables": [
+        "Role modules"
+      ],
+      "evidence": [
+        "Completion by role"
+      ],
+      "laws": {},
+      "standards": {
+        "ISO27701": [
+          "7.2 Competence"
+        ],
+        "NISTPF": [
+          "GV.AT-P"
+        ]
+      }
+    },
+    {
+      "id": "PPL-04",
+      "domain": "PPL",
+      "title": "Privacy lead competence and professional development",
+      "objective": "The privacy lead and team hold the credentials the law or regulator expects and keep them current.",
+      "phase": 2,
+      "profile": "standard",
+      "dependsOn": [
+        "GOV-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "Check credential requirements in each jurisdiction.",
+        "Plan certification and continuing education.",
+        "Keep evidence on file."
+      ],
+      "deliverables": [
+        "Competence record"
+      ],
+      "evidence": [
+        "Certificates",
+        "CPD log"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "GAID 2025 (DPO credentials); NDPC CPD framework for certified DPOs (June 2026)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "ZW": [
+          {
+            "ref": "SI 155 of 2024 (DPO certification course approved by the authority)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 37(5)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 37(5)",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "7.2 Competence"
+        ],
+        "NISTPF": [
+          "GV.AT-P"
+        ]
+      }
+    },
+    {
+      "id": "PPL-05",
+      "domain": "PPL",
+      "title": "Awareness and culture",
+      "objective": "Privacy is visible beyond annual training through campaigns, champion activity and leadership messages, and culture is measured.",
+      "phase": 4,
+      "profile": "standard",
+      "dependsOn": [
+        "GOV-03",
+        "PPL-01"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "quarterly",
+      "steps": [
+        "Plan a quarterly awareness calendar.",
+        "Use incidents and requests as teaching material.",
+        "Survey awareness once a year."
+      ],
+      "deliverables": [
+        "Awareness plan"
+      ],
+      "evidence": [
+        "Campaign records",
+        "Survey results"
+      ],
+      "laws": {},
+      "standards": {
+        "ISO27701": [
+          "7.3 Awareness",
+          "7.4 Communication"
+        ],
+        "NISTPF": [
+          "GV.AT-P"
+        ]
+      }
+    },
+    {
+      "id": "AIG-01",
+      "domain": "AIG",
+      "title": "AI system inventory",
+      "objective": "Every AI system and generative AI tool in use or development is listed with its purpose, owner, data, vendor and decision role.",
+      "phase": 1,
+      "profile": "essential",
+      "triggers": [
+        "ai"
+      ],
+      "dependsOn": [
+        "INV-01"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "quarterly",
+      "module": "ai",
+      "steps": [
+        "Survey teams and procurement for AI use, including free generative tools.",
+        "Record each system with its data and decision role.",
+        "Link systems to processing activities."
+      ],
+      "deliverables": [
+        "AI inventory"
+      ],
+      "evidence": [
+        "Inventory"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "EU AI Act Art. 26 (deployer obligations)",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Applies to deployers of high-risk systems in the EU."
+          }
+        ],
+        "NG": [
+          {
+            "ref": "NDPA s.37",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO42001": [
+          "6.1 Actions to address risks and opportunities",
+          "Annex A: AI system inventory and resources"
+        ],
+        "NISTPF": [
+          "ID.IM-P"
+        ]
+      }
+    },
+    {
+      "id": "AIG-02",
+      "domain": "AIG",
+      "title": "AI acceptable use policy",
+      "objective": "Staff know which AI tools they may use, with what data, and what needs approval.",
+      "phase": 1,
+      "profile": "essential",
+      "triggers": [
+        "ai"
+      ],
+      "dependsOn": [
+        "GOV-04"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "annual",
+      "module": "governance",
+      "steps": [
+        "List approved tools and prohibited data types.",
+        "Set an approval route for new tools.",
+        "Train staff on it."
+      ],
+      "deliverables": [
+        "AI use policy"
+      ],
+      "evidence": [
+        "Approved policy",
+        "Training records"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "EU AI Act Art. 4 (AI literacy)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO42001": [
+          "5.2 AI policy"
+        ]
+      }
+    },
+    {
+      "id": "AIG-03",
+      "domain": "AIG",
+      "title": "AI risk classification and impact assessment",
+      "objective": "Each AI system is classified against the laws in scope and assessed for impact on people before deployment.",
+      "phase": 2,
+      "profile": "standard",
+      "triggers": [
+        "ai"
+      ],
+      "dependsOn": [
+        "AIG-01",
+        "RSK-02"
+      ],
+      "owner": "privacy-lead",
+      "effort": "M",
+      "recurrence": "per-event",
+      "module": "assessments",
+      "steps": [
+        "Classify each system (prohibited, high risk, limited, minimal; and data protection risk).",
+        "Extend the DPIA with model purpose, affected groups, bias and oversight.",
+        "Sign off before production."
+      ],
+      "deliverables": [
+        "AI classifications",
+        "AI impact assessments"
+      ],
+      "evidence": [
+        "Assessments"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "EU AI Act Arts. 6, 27; GDPR Art. 35",
+            "kind": "requires",
+            "conf": "primary",
+            "note": "Fundamental rights impact assessment for listed deployers."
+          }
+        ],
+        "NG": [
+          {
+            "ref": "NDPA ss.28, 37",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA ss.31, 35",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO42001": [
+          "6.1.4 AI system impact assessment",
+          "8.4 AI system impact assessment"
+        ]
+      }
+    },
+    {
+      "id": "AIG-04",
+      "domain": "AIG",
+      "title": "Automated decisions: safeguards and human review",
+      "objective": "Decisions with legal or similarly significant effects made solely by automated means have a lawful basis, are explained, and can be contested before a human.",
+      "phase": 2,
+      "profile": "essential",
+      "triggers": [
+        "ai"
+      ],
+      "dependsOn": [
+        "AIG-01"
+      ],
+      "owner": "product",
+      "effort": "M",
+      "recurrence": "annual",
+      "module": "ai",
+      "steps": [
+        "Identify solely automated decisions with significant effects.",
+        "Confirm the basis and safeguards each law requires.",
+        "Provide explanation, a contest route and human review."
+      ],
+      "deliverables": [
+        "Automated decision register",
+        "Contest and review procedure"
+      ],
+      "evidence": [
+        "Review records"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "NDPA s.37",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZA": [
+          {
+            "ref": "POPIA s.71",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "Kenya DPA s.35",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "ZW": [
+          {
+            "ref": "CDPA 2021 s.25",
+            "kind": "requires",
+            "conf": "unverified"
+          }
+        ],
+        "EU": [
+          {
+            "ref": "GDPR Art. 22",
+            "kind": "requires",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 22A–22D",
+            "kind": "requires",
+            "conf": "secondary",
+            "note": "Inserted by the Data (Use and Access) Act 2025; in force from 5 February 2026."
+          }
+        ]
+      },
+      "standards": {
+        "ISO42001": [
+          "Annex A: use of AI systems; information for interested parties"
+        ],
+        "NISTPF": [
+          "CT.DM-P"
+        ]
+      }
+    },
+    {
+      "id": "AIG-05",
+      "domain": "AIG",
+      "title": "Training and input data governance",
+      "objective": "Personal data used to train, fine-tune or prompt AI systems has a lawful basis, is minimised and is recorded.",
+      "phase": 2,
+      "profile": "standard",
+      "triggers": [
+        "ai"
+      ],
+      "dependsOn": [
+        "AIG-01",
+        "LAW-01"
+      ],
+      "owner": "data-science",
+      "effort": "M",
+      "recurrence": "per-event",
+      "steps": [
+        "Record data sources for each model.",
+        "Confirm basis and notice coverage for training use.",
+        "Minimise and pseudonymise before training."
+      ],
+      "deliverables": [
+        "Dataset records"
+      ],
+      "evidence": [
+        "Dataset documentation"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Arts. 5, 6; EU AI Act Art. 10",
+            "kind": "supports",
+            "conf": "primary",
+            "note": "The Digital Omnibus Council text would confirm legitimate interests may support AI development, case by case; not law."
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Arts. 5, 6",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO42001": [
+          "Annex A: data for AI systems"
+        ]
+      }
+    },
+    {
+      "id": "AIG-06",
+      "domain": "AIG",
+      "title": "AI vendor and model provider due diligence",
+      "objective": "AI vendors are assessed for training on customer data, retention, location, security and model documentation before use.",
+      "phase": 2,
+      "profile": "standard",
+      "triggers": [
+        "ai"
+      ],
+      "dependsOn": [
+        "TPR-02",
+        "AIG-01"
+      ],
+      "owner": "procurement",
+      "effort": "S",
+      "recurrence": "per-event",
+      "module": "vendors",
+      "steps": [
+        "Add AI questions to vendor due diligence.",
+        "Contract against training on your data where needed.",
+        "Record model cards or equivalent documentation."
+      ],
+      "deliverables": [
+        "AI vendor assessments"
+      ],
+      "evidence": [
+        "Assessments and contract terms"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "EU AI Act Art. 25 (value chain)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "NG": [
+          {
+            "ref": "NDPA s.29",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO42001": [
+          "Annex A: third-party and customer relationships"
+        ]
+      }
+    },
+    {
+      "id": "AIG-07",
+      "domain": "AIG",
+      "title": "AI monitoring, validation and bias testing",
+      "objective": "AI systems affecting people are validated before release and monitored for accuracy, drift and unfair outcomes.",
+      "phase": 3,
+      "profile": "advanced",
+      "triggers": [
+        "ai"
+      ],
+      "dependsOn": [
+        "AIG-03"
+      ],
+      "owner": "data-science",
+      "effort": "L",
+      "recurrence": "quarterly",
+      "module": "ai",
+      "steps": [
+        "Define validation metrics including fairness across groups.",
+        "Monitor in production.",
+        "Re-validate after material changes."
+      ],
+      "deliverables": [
+        "Validation reports",
+        "Monitoring dashboards"
+      ],
+      "evidence": [
+        "Latest validation and monitoring results"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "EU AI Act Arts. 9, 15, 26(5)",
+            "kind": "supports",
+            "conf": "primary",
+            "note": "Mandatory for high-risk systems: providers test and monitor; deployers monitor operation."
+          }
+        ]
+      },
+      "standards": {
+        "ISO42001": [
+          "9.1 Monitoring, measurement, analysis and evaluation",
+          "Annex A: AI system life cycle"
+        ]
+      }
+    },
+    {
+      "id": "ASR-01",
+      "domain": "ASR",
+      "title": "Control self-assessment",
+      "objective": "Control owners confirm twice a year that their controls operate, with evidence, and gaps feed the plan.",
+      "phase": 3,
+      "profile": "standard",
+      "dependsOn": [
+        "GOV-07"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "semi-annual",
+      "steps": [
+        "Send owners their controls and evidence requirements.",
+        "Review responses and sample evidence.",
+        "Raise gaps as tasks."
+      ],
+      "deliverables": [
+        "Self-assessment results"
+      ],
+      "evidence": [
+        "Completed self-assessments"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "GAID 2025 (annual audit preparation)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "9.1 Monitoring, measurement, analysis and evaluation"
+        ],
+        "NISTPF": [
+          "GV.MT-P"
+        ]
+      }
+    },
+    {
+      "id": "ASR-02",
+      "domain": "ASR",
+      "title": "Internal audit of the programme",
+      "objective": "An independent internal audit tests the programme against this framework and the laws in scope on a planned cycle.",
+      "phase": 3,
+      "profile": "standard",
+      "dependsOn": [
+        "ASR-01"
+      ],
+      "owner": "internal-audit",
+      "effort": "M",
+      "recurrence": "annual",
+      "steps": [
+        "Plan audits by risk.",
+        "Audit with someone independent of the controls.",
+        "Report findings to management and track them."
+      ],
+      "deliverables": [
+        "Audit plan",
+        "Audit reports"
+      ],
+      "evidence": [
+        "Reports and finding status"
+      ],
+      "laws": {
+        "EU": [
+          {
+            "ref": "GDPR Art. 39(1)(b)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ],
+        "UK": [
+          {
+            "ref": "UK GDPR Art. 39(1)(b)",
+            "kind": "supports",
+            "conf": "primary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "9.2 Internal audit"
+        ],
+        "NISTPF": [
+          "GV.MT-P"
+        ]
+      }
+    },
+    {
+      "id": "ASR-03",
+      "domain": "ASR",
+      "title": "Management review",
+      "objective": "Top management reviews the programme at planned intervals and decides on changes, resources and improvement.",
+      "phase": 3,
+      "profile": "standard",
+      "dependsOn": [
+        "GOV-05",
+        "ASR-02"
+      ],
+      "owner": "board",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "Prepare inputs: audit results, indicators, incidents, regulatory changes.",
+        "Hold the review.",
+        "Record decisions and actions."
+      ],
+      "deliverables": [
+        "Management review minutes"
+      ],
+      "evidence": [
+        "Minutes"
+      ],
+      "laws": {},
+      "standards": {
+        "ISO27701": [
+          "9.3 Management review"
+        ],
+        "NISTPF": [
+          "GV.MT-P"
+        ]
+      }
+    },
+    {
+      "id": "ASR-04",
+      "domain": "ASR",
+      "title": "Nonconformity and corrective action",
+      "objective": "Findings from audits, incidents, complaints and regulators are corrected at the root cause and checked for effectiveness.",
+      "phase": 3,
+      "profile": "standard",
+      "dependsOn": [
+        "ASR-01"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "continuous",
+      "steps": [
+        "Log each finding.",
+        "Analyse root cause.",
+        "Track corrective action to verified closure."
+      ],
+      "deliverables": [
+        "Corrective action log"
+      ],
+      "evidence": [
+        "Closed actions with verification"
+      ],
+      "laws": {},
+      "standards": {
+        "ISO27701": [
+          "10.2 Nonconformity and corrective action"
+        ],
+        "NISTPF": [
+          "GV.MT-P"
+        ]
+      }
+    },
+    {
+      "id": "ASR-05",
+      "domain": "ASR",
+      "title": "External audit readiness",
+      "objective": "The organisation can pass an external audit or regulator inspection without a scramble, with evidence current for every control.",
+      "phase": 3,
+      "profile": "essential",
+      "dependsOn": [
+        "GOV-07"
+      ],
+      "owner": "privacy-lead",
+      "effort": "M",
+      "recurrence": "annual",
+      "steps": [
+        "Run a mock audit against the regulator’s checklist.",
+        "Close gaps before the audit window.",
+        "Brief the people who will be interviewed."
+      ],
+      "deliverables": [
+        "Mock audit report"
+      ],
+      "evidence": [
+        "Mock audit and remediation"
+      ],
+      "laws": {
+        "NG": [
+          {
+            "ref": "GAID 2025 (annual audit by a licensed DPCO for upper-tier controllers)",
+            "kind": "requires",
+            "conf": "secondary"
+          }
+        ],
+        "KE": [
+          {
+            "ref": "ODPC compliance audits (draft Conduct of Compliance Audit regulations)",
+            "kind": "supports",
+            "conf": "secondary"
+          }
+        ]
+      },
+      "standards": {
+        "ISO27701": [
+          "9.2 Internal audit"
+        ]
+      }
+    },
+    {
+      "id": "ASR-06",
+      "domain": "ASR",
+      "title": "Continual improvement and benchmarking",
+      "objective": "The programme measures its maturity each year, benchmarks itself, and sets the next year’s plan from the results.",
+      "phase": 4,
+      "profile": "advanced",
+      "dependsOn": [
+        "ASR-03"
+      ],
+      "owner": "privacy-lead",
+      "effort": "S",
+      "recurrence": "annual",
+      "steps": [
+        "Score maturity by domain.",
+        "Compare with peers where data allows.",
+        "Set targets and update the plan."
+      ],
+      "deliverables": [
+        "Maturity assessment",
+        "Next-year plan"
+      ],
+      "evidence": [
+        "Year-on-year maturity scores"
+      ],
+      "laws": {},
+      "standards": {
+        "ISO27701": [
+          "10.1 Continual improvement"
+        ],
+        "NISTPF": [
+          "GV.MT-P"
+        ]
+      }
+    },
+    {
+      "id": "ASR-07",
+      "domain": "ASR",
+      "title": "Certification",
+      "objective": "The privacy information management system is certified by an accredited body and the certificate is maintained.",
+      "phase": 4,
+      "profile": "standard",
+      "triggers": [
+        "certification"
+      ],
+      "dependsOn": [
+        "ASR-02",
+        "ASR-03",
+        "ASR-04"
+      ],
+      "owner": "privacy-lead",
+      "effort": "L",
+      "recurrence": "annual",
+      "steps": [
+        "Define the certification scope.",
+        "Produce the Statement of Applicability against Annex A.",
+        "Complete stage 1 and stage 2 audits.",
+        "Plan surveillance audits."
+      ],
+      "deliverables": [
+        "Statement of Applicability",
+        "Certificate"
+      ],
+      "evidence": [
+        "Certificate and audit reports"
+      ],
+      "laws": {},
+      "standards": {
+        "ISO27701": [
+          "Clauses 4–10; Annex A"
+        ]
+      },
+      "notes": "ISO/IEC 27701:2025 can be certified on its own. Holders of 2019 certificates must transition by October 2028."
+    }
+  ]
+}

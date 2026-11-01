@@ -224,3 +224,11 @@ textarea { min-height: 84px; resize: vertical; }
 .clockrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
 input[type="search"] { min-height: 40px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); padding: 0 10px; }
 .err { color: var(--bad); }
+
+/* Programme plan */
+.gantt { position: relative; height: 4px; margin-top: 8px; border-radius: 2px; background: var(--line-soft); max-width: 420px; }
+.gantt > div { position: absolute; top: 0; bottom: 0; border-radius: 2px; background: var(--accent); opacity: 0.75; }
+.sig { font-size: 11px; font-weight: 600; padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.sig.ok { color: var(--ok); }
+.sig.warn { color: var(--warn); }
+.sig.bad { color: var(--bad); }

@@ -12,3 +12,4 @@ export * from './exports.js';
 export * from './schemas.js';
 export * from './sample.js';
 export * from './migrate.js';
+export * from './programme/index.js';

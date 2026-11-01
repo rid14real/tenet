@@ -25,10 +25,25 @@ Each entity selects the laws that apply to it: Nigeria (NDPA 2023 and GAID 2025)
 
 Nothing from a law that is not selected appears anywhere. If you deselect Nigeria, the NDPC registration number, tier, audit return and NDPA citations disappear from settings, forms, compliance, the action plan and the deadlines list. The values you entered are kept, and they come back if you select Nigeria again. Forms also adapt to the record itself. For example, the condition for sensitive data appears only when a selected category is sensitive under a selected law (marital status is sensitive in Kenya but not in Nigeria). Transfer fields appear only when a system or vendor sits outside a selected jurisdiction.
 
+## The programme engine and the open framework
+
+Tenet's **Programme** tab turns the [Open Privacy Programme Framework](framework/README.md) (OPPF) into a plan for each entity. OPPF is published separately under CC BY 4.0. It has 93 controls in 14 domains, three scaling profiles, four phases with dependencies, and a maturity model. Each control is mapped to the eight laws below, to ISO/IEC 27701:2025 and the NIST Privacy Framework, and, for AI controls, to ISO/IEC 42001 and the EU AI Act.
+
+The Programme tab works in five steps:
+
+1. **Scope.** A few questions about volume, sensitive and children's data, AI, transfers, marketing, consent, cookies, monitoring and certification. Tenet pre-fills the answers it can infer from the entity's records.
+2. **Profile.** Tenet recommends Essential, Standard or Advanced and shows its reasons. The organisation can override the recommendation.
+3. **Plan.** The plan holds every control the profile includes, plus any control that a law in scope requires even when it sits above the profile. Controls whose triggers do not hold are listed under Not in plan, with the reason.
+4. **Schedule.** The plan is ordered by dependencies, phase and legal requirement, then scheduled against the team's weekly capacity. A capacity planner shows the time needed to finish within 6 to 36 months.
+5. **Track.** Each control records its status, owner, target date and evidence. Tenet's own records act as signals: for example, the ROPA requirement reads from the data map. Maturity is scored from 0 to 5 per control and per domain. A control whose review is overdue drops back to level 2.
+
+Plans export as Markdown and CSV. The framework itself exports as JSON and Markdown.
+
 ## Modules
 
 | Module | What makes it more than a register |
 |---|---|
+| Programme | A tailored, sequenced OPPF implementation plan, with capacity planning, maturity and evidence. |
 | Compliance | Each requirement is evaluated per law and derived from the records, not from checkboxes. Each one shows its section, its status and which module fixes it. Reports export per law; the Nigerian report is a Compliance Audit Return preparation pack. |
 | Action plan | One fix that clears gaps under several laws appears once, with every law it satisfies. Any action can become a task with an owner and a due date. |
 | Data map (ROPA) | Processing activities linked to systems, vendors and data categories. Each activity page shows, per law, the lawful basis and citation, any sensitive-data condition needed, whether a DPIA is required and why, and transfer status. The flows view and the ROPA CSV have one column set per law. |

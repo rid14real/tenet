@@ -6,6 +6,7 @@ import { JURISDICTION_CODES, PACKS, establishedIn, sensitiveIn } from './jurisdi
 import { BASES, COUNTRIES, DATA_CATEGORIES, POLICY_TYPES, RIGHTS, SECTORS, SPECIAL_CONDITIONS, TRANSFER_MECHANISMS } from './taxonomy.js';
 import type { FieldCtx, FieldDef } from './fields.js';
 import type { CollectionName, JurisdictionCode } from './types.js';
+import { CONTROL_STATUSES } from './programme/types.js';
 
 const o = (xs: readonly { id: string; label: string }[]) => xs.map((x) => ({ value: x.id, label: x.label }));
 const countryOpts = Object.entries(COUNTRIES).map(([value, label]) => ({ value, label })).sort((a, b) => a.label.localeCompare(b.label));
@@ -217,6 +218,21 @@ export const COLLECTION_META: Record<CollectionName, { label: string; singular: 
       { key: 'status', label: 'Status', type: 'select', default: 'open', options: [{ value: 'open', label: 'Open' }, { value: 'in-progress', label: 'In progress' }, { value: 'done', label: 'Done' }] },
       { key: 'detail', label: 'Detail', type: 'textarea', listHidden: true },
       { key: 'gapKey', label: 'Linked gap', type: 'text', listHidden: true, visible: () => false },
+    ],
+  },
+  controls: {
+    label: 'Programme controls', singular: 'programme control', titleKey: 'controlId',
+    fields: [
+      { key: 'controlId', label: 'Control', type: 'text', required: true, visible: () => false },
+      { key: 'status', label: 'Status', type: 'select', required: true, default: 'not-started', options: CONTROL_STATUSES.map((s) => ({ value: s.id, label: s.label })) },
+      { key: 'owner', label: 'Owner', type: 'text', help: 'The person accountable for this control.' },
+      { key: 'due', label: 'Target date', type: 'date', help: 'Leave empty to use the planned finish.' },
+      { key: 'implementedOn', label: 'Implemented on', type: 'date', visible: (r) => r.status === 'implemented' || r.status === 'operating' },
+      { key: 'lastReviewed', label: 'Last reviewed', type: 'date', visible: (r) => r.status === 'implemented' || r.status === 'operating' },
+      { key: 'evidence', label: 'Evidence', type: 'textarea', help: 'Links, document references or record names an auditor can check.', visible: (r) => r.status !== 'not-applicable' },
+      { key: 'naReason', label: 'Why it does not apply', type: 'textarea', required: true, visible: (r) => r.status === 'not-applicable' },
+      { key: 'optimised', label: 'Measured and improved routinely', type: 'boolean', default: false, help: 'Maturity level 5: indicators are reviewed and the control is improved from them.', visible: (r) => r.status === 'operating' },
+      { key: 'notes', label: 'Notes', type: 'textarea' },
     ],
   },
 };
